@@ -1,0 +1,1451 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title></title>
+        
+        <meta name="robots" content="noindex" />
+        
+        
+
+
+        <!-- Custom HTML head -->
+        
+
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        
+        <link rel="icon" href="favicon.svg">
+        
+        
+        <link rel="shortcut icon" href="favicon.png">
+        
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        
+        <link rel="stylesheet" href="css/print.css" media="print">
+        
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        
+        <link rel="stylesheet" href="fonts/fonts.css">
+        
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="basics.html"><strong aria-hidden="true">2.</strong> Basics</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="borrow_checking.html"><strong aria-hidden="true">2.1.</strong> Borrow checking</a></li><li class="chapter-item expanded "><a href="lifetime_subtyping.html"><strong aria-hidden="true">2.2.</strong> Lifetime subtyping</a></li><li class="chapter-item expanded "><a href="intro_to_variance.html"><strong aria-hidden="true">2.3.</strong> Introduction to variance</a></li></ol></li><li class="chapter-item expanded "><a href="implied_bounds.html"><strong aria-hidden="true">3.</strong> A word about implied bounds</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                        
+                    </div>
+
+                    <h1 class="menu-title"></h1>
+
+                    <div class="right-buttons">
+                        
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        
+                        
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
+<p>Lifetimes are Rust's most distinctive feature. They are what makes the language so valuable in the systems programming domain.
+It's important to master lifetimes to use Rust effectively. Unfortunately, it's a very broad topic. 
+To have a solid understanding of how lifetimes work you have to learn about them bit by bit from tons of 
+official and unofficial Rust books, blogs, GitHub issues, source code comments, video materials, and your own mistakes. 
+This book is my attempt to fix this situation. Here I'm trying to provide all knowledge I posses about lifetimes in an organized way. 
+We will start from the <code>basics</code> chapter where we will explore how lifetime annotations affect the borrow checking. 
+After finishing this chapter you should be able to annotate your code with a confidence and an understanding of what you're doing. 
+Then we explore various topics that are nice to know about in certain situations. They're not as important as the <code>basics</code> chapter, 
+you can revisit them when you need to.</p>
+<h1 id="basics"><a class="header" href="#basics">Basics</a></h1>
+<p><em>Disclaimer: It's recommended to follow the example by retyping it in your favorite editor</em></p>
+<p>Imagine we're writing a web crawler. We're collecting posts from different blogs.
+The crawler's output looks like this:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct DiscoveredItem {
+    blog_url: String,
+    post_url: String,
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>Now we want to write a function operating on the web crawler's results
+to iterate post URLs from a specific blog.</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct DiscoveredItem {
+    blog_url: String,
+    post_url: String,
+}
+
+fn post_urls_from_blog(
+    items: &amp;[DiscoveredItem], 
+    blog_url: &amp;str,
+) -&gt; impl Iterator&lt;Item = &amp;str&gt; {
+    // Creating an iterator from the &amp;[DiscoveredItem] slice
+    items.iter().filter_map(move |item| {
+        // Filtering items by blog_url
+        if item.blog_url == blog_url {
+            // Returning a post URL
+            Some(item.post_url.as_str())
+        } else {
+            None
+        }
+    })
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>Our function doesn't compile. Compiler complains it needs some lifetime annotations. </p>
+<pre><code>error[E0106]: missing lifetime specifier
+  --&gt; src/main.rs:12:27
+   |
+10 |     items: &amp;[DiscoveredItem], 
+   |            -----------------
+11 |     blog_url: &amp;str,
+   |               ----
+12 | ) -&gt; impl Iterator&lt;Item = &amp;str&gt; {
+   |                           ^ expected named lifetime parameter
+   |
+   = help: this function's return type contains a borrowed value, but the signature does not say whether it is borrowed from `items` or `blog_url`
+help: consider introducing a named lifetime parameter
+   |
+9  ~ fn post_urls_from_blog&lt;'a&gt;(
+10 ~     items: &amp;'a [DiscoveredItem], 
+11 ~     blog_url: &amp;'a str,
+12 ~ ) -&gt; impl Iterator&lt;Item = &amp;'a str&gt; {
+   |
+
+For more information about this error, try `rustc --explain E0106`.
+error: could not compile `playground` due to previous error
+</code></pre>
+<p>If we read the error carefully we can even find a suggestion how to fix our signature.</p>
+<pre><code>help: consider introducing a named lifetime parameter
+   |
+9  ~ fn post_urls_from_blog&lt;'a&gt;(
+10 ~     items: &amp;'a [DiscoveredItem], 
+11 ~     blog_url: &amp;'a str,
+12 ~ ) -&gt; impl Iterator&lt;Item = &amp;'a str&gt; {
+   |
+</code></pre>
+<p>Let's use it!</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct DiscoveredItem {
+    blog_url: String,
+    post_url: String,
+}
+
+fn post_urls_from_blog&lt;'a&gt;(
+    items: &amp;'a [DiscoveredItem], 
+    blog_url: &amp;'a str,
+) -&gt; impl Iterator&lt;Item = &amp;'a str&gt; {
+    // Creating an iterator from the &amp;[DiscoveredItem] slice
+    items.iter().filter_map(move |item| {
+        // Filtering items by blog_url
+        if item.blog_url == blog_url {
+            // Returning a post URL
+            Some(item.post_url.as_str())
+        } else {
+            None
+        }
+    })
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>Cool, now everything compiles. Looks like we have easily won this fight with the borrow checker... No, we haven't.
+The compiler actually caught us. It provided a suggestion which is semantically incorrect and which made 
+our function over restrictive. That means the borrow checker will strike back soon and will make us scream out of pain. 
+Take a deep breath because in a moment...</p>
+<h2 id="compiler-strikes-back"><a class="header" href="#compiler-strikes-back">Compiler strikes back</a></h2>
+<p>Let's try to use our function in some non-trivial context.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">struct DiscoveredItem {
+</span><span class="boring">   blog_url: String,
+</span><span class="boring">   post_url: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn post_urls_from_blog&lt;'a&gt;(
+</span><span class="boring">   items: &amp;'a [DiscoveredItem], 
+</span><span class="boring">   blog_url: &amp;'a str,
+</span><span class="boring">) -&gt; impl Iterator&lt;Item = &amp;'a str&gt; {
+</span><span class="boring">   // Creating an iterator from the &amp;[DiscoveredItem] slice
+</span><span class="boring">   items.iter().filter_map(move |item| {
+</span><span class="boring">       // Filtering items by blog_url
+</span><span class="boring">       if item.blog_url == blog_url {
+</span><span class="boring">           // Returning a post URL
+</span><span class="boring">           Some(item.post_url.as_str())
+</span><span class="boring">       } else {
+</span><span class="boring">           None
+</span><span class="boring">       }
+</span><span class="boring">   })
+</span><span class="boring">}
+</span>fn main() {
+    // Assume the crawler returned the following results
+    let crawler_results = &amp;[
+        DiscoveredItem {
+            blog_url: &quot;https://blogs.com/&quot;.to_owned().to_owned(),
+            post_url: &quot;https://blogs.com/cooking/fried_eggs&quot;.to_owned(),
+        },
+        DiscoveredItem {
+            blog_url: &quot;https://blogs.com/&quot;.to_owned(),
+            post_url: &quot;https://blogs.com/travelling/death_mountain&quot;.to_owned(),
+        },
+        DiscoveredItem {
+            blog_url: &quot;https://successfulsam.xyz/&quot;.to_owned(),
+            post_url: &quot;https://successfulsam.xyz/keys_to_success/Just_do_this_one_thing_every_day&quot;.to_owned(),
+        },
+    ];
+
+    // Reading the blog URL we're interested in from somewhere
+    let blog_url = get_blog_url(); 
+
+    // Collecting post URLs from this blog using our function
+    let post_urls: Vec&lt;_&gt; = post_urls_from_blog(crawler_results, &amp;blog_url).collect();
+
+    // Spawning a thread to do some further blog processing
+    let handle = std::thread::spawn(move || calculate_blog_stats(blog_url));
+
+    // Processing posts in parallel
+    for url in post_urls {
+        process_post(url);
+    }
+
+    handle.join().expect(&quot;Everything will be fine&quot;);
+}
+
+// Returns a predefined value
+fn get_blog_url() -&gt; String {
+    &quot;https://blogs.com/&quot;.to_owned()    
+}
+
+// Just prints URL out
+fn process_post(url: &amp;str) {
+    println!(&quot;{}&quot;, url);
+}
+
+// Actually does nothing
+fn calculate_blog_stats(_blog_url: String) {}
+</code></pre></pre>
+<p>This code doesn't compile. What's worse is the compiler error that just absurd:</p>
+<pre><code>   Compiling playground v0.0.1 (/playground)
+error[E0505]: cannot move out of `blog_url` because it is borrowed
+  --&gt; src/main.rs:45:37
+   |
+42 |     let post_urls: Vec&lt;_&gt; = post_urls_from_blog(crawler_results, &amp;blog_url).collect();
+   |                                                                  --------- borrow of `blog_url` occurs here
+...
+45 |     let handle = std::thread::spawn(move || calculate_blog_stats(blog_url));
+   |                                     ^^^^^^^                      -------- move occurs due to use in closure
+   |                                     |
+   |                                     move out of `blog_url` occurs here
+...
+48 |     for url in post_urls {
+   |                --------- borrow later used here
+
+For more information about this error, try `rustc --explain E0505`.
+error: could not compile `playground` due to previous error
+</code></pre>
+<p>How on earth <code>blog_url</code> that was taken from some kind of a user input is
+related to <code>post_urls</code> returned by the crawler?
+The most annoying thing is the code in the <code>main</code> function is actually perfectly fine and should compile, 
+but as you may have already guessed it doesn't because of our malformed function signature. 
+What's going on here and what's the error communicating to us? 
+To answer these questions we need to understand the way the borrow checker works.</p>
+<h1 id="borrow-checking"><a class="header" href="#borrow-checking">Borrow checking</a></h1>
+<p>The most important thing to understand about the borrow checker is it
+analyzes each function completely independently from other functions.
+That means when we encounter a call to our <code>post_urls_from_blog</code> the
+borrow checker doesn't look inside it to validate the usage of references.
+All it does is it reads the function signature and evaluates its lifetimes.
+But what does it mean to evaluate a lifetime? Let's go back to our example
+and figure this out.</p>
+<p>As a borrow checker we're analyzing our <code>main</code> function and encountering a
+line of code with another function invocation.</p>
+<pre><code class="language-rust noplayground">let post_urls: Vec&lt;_&gt; = post_urls_from_blog(crawler_results, &amp;blog_url).collect();
+</code></pre>
+<p>First of all, we need to read the function signature:</p>
+<pre><code class="language-rust noplayground">fn post_urls_from_blog&lt;'a&gt;(
+    items: &amp;'a [DiscoveredItem], 
+    blog_url: &amp;'a str,
+) -&gt; impl Iterator&lt;Item = &amp;'a str&gt; {
+    // We're looking at the function from the borrow checker's perspective.
+    // It doesn't see the impl :(
+}
+</code></pre>
+<p>See this <code>'a</code> we defined here? This is a generic lifetime. Sort of a placeholder.
+We need to come up with a concrete value for it at every place we call the function.
+To calculate it we need to adhere the following conditions:</p>
+<ol>
+<li>The lifetime value must be minimal.</li>
+<li>References with this resulting lifetime value must stay valid for the whole lifetime value(no dangling pointers!)</li>
+</ol>
+<p>Ok, but that still sounds vague. What exactly is a lifetime value? Well, it's nothing more than a continuous<sup class="footnote-reference"><a href="#continuous">1</a></sup> region of code. 
+Like from line X to line Y. The single line with the function invocation above is a perfect region of code. That's some another perfect region of code:</p>
+<pre><code class="language-rust noplayground">/---region
+|// Reading the blog URL we're interested in from somewhere
+|let blog_url = get_blog_url(); 
+|
+|// Collecting post URLs from this blog using our function
+|let post_urls: Vec&lt;_&gt; = post_urls_from_blog(crawler_results, &amp;blog_url).collect();
+|
+|// Spawning a thread to do some further blog processing
+|let handle = std::thread::spawn(move || calculate_blog_stats(blog_url));
+-
+</code></pre>
+<p>Region boundaries basically define where the refences can be used and the duration of the borrow.
+<strong>All</strong> references belonging to the region must be safe to use at <strong>any</strong> line within the region.
+All regions are function scoped. There are no &quot;cross-function&quot; regions. When we encounter
+a function call in a function we currently analyze we just calculate a region for it
+in the calling function based on the callee signature.</p>
+<p>Now when we posses this secret knowledge we can formulate our task more precisely:
+<em>At the function invocation point we need to infer some minimal regions of code that will &quot;hold&quot; our references 
+with the guarantee that these references are safe to use at any line within the region they belong to.</em></p>
+<h2 id="inferring-regions"><a class="header" href="#inferring-regions">Inferring regions</a></h2>
+<p>Let's look at the <code>post_urls_from_blog</code> signature once again:</p>
+<pre><code class="language-rust noplayground">fn post_urls_from_blog&lt;'a&gt;(
+    items: &amp;'a [DiscoveredItem], 
+    blog_url: &amp;'a str,
+) -&gt; impl Iterator&lt;Item = &amp;'a str&gt; {
+    // We're looking at the function from the borrow checker's perspective.
+    // It doesn't see the impl :(
+}
+</code></pre>
+<p>We see only one lifetime paramater which means we need to infer only one region for this function(Yes, we're inferring
+regions for the whole function, not for each of its arguments).
+This region must hold <code>items</code>, <code>blog_url</code>, <code>Item</code> references and... an iterator. The complete function
+signature actually looks like that:</p>
+<pre><code class="language-rust noplayground">fn post_urls_from_blog&lt;'a&gt;(
+    items: &amp;'a [DiscoveredItem], 
+    blog_url: &amp;'a str,
+) -&gt; impl Iterator&lt;Item = &amp;'a str&gt; + 'a {
+    // We're looking at the function from the borrow checker's perspective.
+    // It doesn't see the impl :(
+}
+</code></pre>
+<p>The compiler elided the last <code>'a</code> according to lifetime elision rules, so it was hidden from us. 
+Now we have all information to perform the evaluation. I will evaluate the signature in a backwards order to quickly show the region expansion, 
+but in general it's more natural to start from the input arguments.</p>
+<p>How wide the region should be? As wide as all references it holds must stay valid. How long
+the references must stay valid? As long as they're used. So, basically, a size of a region is determined
+by the last reference usage this region holds. Let's apply this rule in practice. 
+Our function returns an iterator <code>impl Iterator&lt;Item = &amp;'a str&gt; + 'a</code>. How is it used?</p>
+<pre><code class="language-rust noplayground">let post_urls: Vec&lt;_&gt; = post_urls_from_blog(crawler_results, &amp;blog_url).collect();
+</code></pre>
+<p>Well, we just collect it immediately into a vector therefore, our region with respect of iterator
+is a single line of code(the iterator is consumed and can't be used anywhere else):</p>
+<pre><code class="language-rust noplayground">fn main() {
+    let crawler_results = &amp;[
+        DiscoveredItem {
+            blog_url: &quot;https://blogs.com/&quot;.to_owned().to_owned(),
+            post_url: &quot;https://blogs.com/cooking/fried_eggs&quot;.to_owned(),
+        },
+        DiscoveredItem {
+            blog_url: &quot;https://blogs.com/&quot;.to_owned(),
+            post_url: &quot;https://blogs.com/travelling/death_mountain&quot;.to_owned(),
+        },
+        DiscoveredItem {
+            blog_url: &quot;https://successfulsam.xyz/&quot;.to_owned(),
+            post_url: &quot;https://successfulsam.xyz/keys_to_success/Just_do_this_one_thing_every_day&quot;.to_owned(),
+        },
+    ];
+
+    let blog_url = get_blog_url(); 
+
+/---post_urls_from_blog 'a region
+|   let post_urls: Vec&lt;_&gt; = post_urls_from_blog(crawler_results, &amp;blog_url).collect();
+-
+    let handle = std::thread::spawn(move || calculate_blog_stats(blog_url));
+
+    for url in post_urls {
+        process_post(url);
+    }
+
+    handle.join().expect(&quot;Everything will be fine&quot;);
+}
+</code></pre>
+<p>The consumed iterator yielded references <code>Item=&amp;'a str</code> that also belong to our region.
+We store them in the <code>post_urls</code> vector. Now we need to find the last usage of those references.
+It's here:</p>
+<pre><code class="language-rust noplayground">    for url in post_urls {
+        process_post(url);
+    }
+</code></pre>
+<p>So <code>post_urls</code> references must be valid at least till the end of this loop. Expanding the region accordingly:</p>
+<pre><code class="language-rust noplayground">fn main() {
+    let crawler_results = &amp;[
+        DiscoveredItem {
+            blog_url: &quot;https://blogs.com/&quot;.to_owned().to_owned(),
+            post_url: &quot;https://blogs.com/cooking/fried_eggs&quot;.to_owned(),
+        },
+        DiscoveredItem {
+            blog_url: &quot;https://blogs.com/&quot;.to_owned(),
+            post_url: &quot;https://blogs.com/travelling/death_mountain&quot;.to_owned(),
+        },
+        DiscoveredItem {
+            blog_url: &quot;https://successfulsam.xyz/&quot;.to_owned(),
+            post_url: &quot;https://successfulsam.xyz/keys_to_success/Just_do_this_one_thing_every_day&quot;.to_owned(),
+        },
+    ];
+
+    let blog_url = get_blog_url(); 
+
+/---post_urls_from_blog 'a region
+|   let post_urls: Vec&lt;_&gt; = post_urls_from_blog(crawler_results, &amp;blog_url).collect();
+|
+|   let handle = std::thread::spawn(move || calculate_blog_stats(blog_url));
+|
+|   for url in post_urls {
+|       process_post(url);
+|   }
+-
+    handle.join().expect(&quot;Everything will be fine&quot;);
+}
+</code></pre>
+<p>As for input arguments, usually they don't affect the region expansion because
+they must be valid only for the duration of a function call, but later we will study some cases when they do.
+Let's evaluate <code>items: &amp;'a [DiscoveredItem]</code> and <code>blog_url: &amp;'a str</code> together. They're just
+regular input references without any quirks, so they must be valid only at the line with the function invocation.
+If we had started our analysis from input arguments, our region would look like that:</p>
+<pre><code class="language-rust noplayground">fn main() {
+    let crawler_results = &amp;[
+        DiscoveredItem {
+            blog_url: &quot;https://blogs.com/&quot;.to_owned().to_owned(),
+            post_url: &quot;https://blogs.com/cooking/fried_eggs&quot;.to_owned(),
+        },
+        DiscoveredItem {
+            blog_url: &quot;https://blogs.com/&quot;.to_owned(),
+            post_url: &quot;https://blogs.com/travelling/death_mountain&quot;.to_owned(),
+        },
+        DiscoveredItem {
+            blog_url: &quot;https://successfulsam.xyz/&quot;.to_owned(),
+            post_url: &quot;https://successfulsam.xyz/keys_to_success/Just_do_this_one_thing_every_day&quot;.to_owned(),
+        },
+    ];
+
+    let blog_url = get_blog_url(); 
+
+/---post_urls_from_blog 'a region
+|   let post_urls: Vec&lt;_&gt; = post_urls_from_blog(crawler_results, &amp;blog_url).collect();
+-
+    let handle = std::thread::spawn(move || calculate_blog_stats(blog_url));
+
+    for url in post_urls {
+        process_post(url);
+    }
+
+    handle.join().expect(&quot;Everything will be fine&quot;);
+}
+</code></pre>
+<p>But we've already analyzed the outputs and know that our region must be wider, hence the resulting
+<code>'a</code> region of the <code>post_urls_from_blog</code> function looks like that:</p>
+<pre><code class="language-rust noplayground">fn main() {
+    let crawler_results = &amp;[
+        DiscoveredItem {
+            blog_url: &quot;https://blogs.com/&quot;.to_owned().to_owned(),
+            post_url: &quot;https://blogs.com/cooking/fried_eggs&quot;.to_owned(),
+        },
+        DiscoveredItem {
+            blog_url: &quot;https://blogs.com/&quot;.to_owned(),
+            post_url: &quot;https://blogs.com/travelling/death_mountain&quot;.to_owned(),
+        },
+        DiscoveredItem {
+            blog_url: &quot;https://successfulsam.xyz/&quot;.to_owned(),
+            post_url: &quot;https://successfulsam.xyz/keys_to_success/Just_do_this_one_thing_every_day&quot;.to_owned(),
+        },
+    ];
+
+    let blog_url = get_blog_url(); 
+
+/---post_urls_from_blog 'a region
+|   let post_urls: Vec&lt;_&gt; = post_urls_from_blog(crawler_results, &amp;blog_url).collect();
+|
+|   let handle = std::thread::spawn(move || calculate_blog_stats(blog_url));
+|
+|   for url in post_urls {
+|       process_post(url);
+|   }
+-
+    handle.join().expect(&quot;Everything will be fine&quot;);
+}
+</code></pre>
+<p>The region holds: a copy of the <code>crawler_results</code> reference, a reference to <code>blog_url</code>, a vector of <code>post_urls</code> references,
+and the consumed iterator(yes, it's consumed at the first line of our region, but it still belongs to it).
+Note that we didn't analyze any relationships between references. We don't understand
+how inputs and outputs are connected and where the references point to. All we did is
+we inferred a region for them where derefencing <strong>any</strong> of those references must
+be safe. </p>
+<p>We're done with our function. Regions for regular variables can be trivially inferred by following Rust scoping
+rules. For example, this is the region for the <code>handle</code> variable:</p>
+<pre><code class="language-rust noplayground">fn main() {
+    let crawler_results = &amp;[
+        DiscoveredItem {
+            blog_url: &quot;https://blogs.com/&quot;.to_owned().to_owned(),
+            post_url: &quot;https://blogs.com/cooking/fried_eggs&quot;.to_owned(),
+        },
+        DiscoveredItem {
+            blog_url: &quot;https://blogs.com/&quot;.to_owned(),
+            post_url: &quot;https://blogs.com/travelling/death_mountain&quot;.to_owned(),
+        },
+        DiscoveredItem {
+            blog_url: &quot;https://successfulsam.xyz/&quot;.to_owned(),
+            post_url: &quot;https://successfulsam.xyz/keys_to_success/Just_do_this_one_thing_every_day&quot;.to_owned(),
+        },
+    ];
+
+    let blog_url = get_blog_url(); 
+
+    let post_urls: Vec&lt;_&gt; = post_urls_from_blog(crawler_results, &amp;blog_url).collect();
+/---handle region
+|   let handle = std::thread::spawn(move || calculate_blog_stats(blog_url));
+|
+|   for url in post_urls {
+|       process_post(url);
+|   }
+|
+|   handle.join().expect(&quot;Everything will be fine&quot;);
+-
+}
+</code></pre>
+<p>Try to infer regions for the remaining variables yourself.</p>
+<h2 id="validating-regions"><a class="header" href="#validating-regions">Validating regions</a></h2>
+<p>It's time to ensure the safety. After we inferred all regions in the
+analyzed function we need to explore relationships between <strong>the regions</strong>(not variables) looking
+for potential conflicts. Let's start at the point where the <code>crawler_results</code> reference is copied to be passed as an argument to the <code>post_urls_from_blog</code>
+function. Can we create this copy? </p>
+<pre><code class="language-rust noplayground">fn main() {
+/---crawler results region
+|   let crawler_results = &amp;[
+|       DiscoveredItem {
+|           blog_url: &quot;https://blogs.com/&quot;.to_owned().to_owned(),
+|           post_url: &quot;https://blogs.com/cooking/fried_eggs&quot;.to_owned(),
+|       },
+|       DiscoveredItem {
+|           blog_url: &quot;https://blogs.com/&quot;.to_owned(),
+|           post_url: &quot;https://blogs.com/travelling/death_mountain&quot;.to_owned(),
+|       },
+|       DiscoveredItem {
+|           blog_url: &quot;https://successfulsam.xyz/&quot;.to_owned(),
+|           post_url: &quot;https://successfulsam.xyz/keys_to_success/Just_do_this_one_thing_every_day&quot;.to_owned(),
+|       },
+|   ];
+|
+|   let blog_url = get_blog_url(); 
+|
+|/--post_urls_from_blog 'a region
+||  let post_urls: Vec&lt;_&gt; = post_urls_from_blog(crawler_results, &amp;blog_url).collect();
+||
+||  let handle = std::thread::spawn(move || calculate_blog_stats(blog_url));
+||
+||  for url in post_urls {
+||      process_post(url);
+||  }
+|-
+|   handle.join().expect(&quot;Everything will be fine&quot;);
+-
+}
+</code></pre>
+<p><code>crawler_resutls</code> region fills the whole <code>main</code> body clearly outliving our <code>post_urls_from_blog 'a</code> region meaning
+we can dereference the copy of <code>crawler_results</code> reference at any line within the <code>post_urls_from_blog 'a</code> region
+(note that we use <code>crawler_results</code> borrow only at the line with the function call, but it lasts till the end of the <code>post_urls_from_blog 'a</code> region anyway).</p>
+<p>Then we're taking a reference to <code>blog_url</code>. Can we do that?</p>
+<pre><code class="language-rust noplayground">fn main() {
+    let crawler_results = &amp;[
+        DiscoveredItem {
+            blog_url: &quot;https://blogs.com/&quot;.to_owned().to_owned(),
+            post_url: &quot;https://blogs.com/cooking/fried_eggs&quot;.to_owned(),
+        },
+        DiscoveredItem {
+            blog_url: &quot;https://blogs.com/&quot;.to_owned(),
+            post_url: &quot;https://blogs.com/travelling/death_mountain&quot;.to_owned(),
+        },
+        DiscoveredItem {
+            blog_url: &quot;https://successfulsam.xyz/&quot;.to_owned(),
+            post_url: &quot;https://successfulsam.xyz/keys_to_success/Just_do_this_one_thing_every_day&quot;.to_owned(),
+        },
+    ];
+/---blog_url region 
+|   let blog_url = get_blog_url(); 
+|
+|/--post_urls_from_blog 'a region
+||  let post_urls: Vec&lt;_&gt; = post_urls_from_blog(crawler_results, &amp;blog_url).collect();
+||
+||  let handle = std::thread::spawn(move || calculate_blog_stats(blog_url));
+-|
+ |  for url in post_urls {
+ |      process_post(url);
+ |  }
+ -
+    handle.join().expect(&quot;Everything will be fine&quot;);
+ 
+}
+</code></pre>
+<p>No, we can't. We must be able to derefence this <code>blog_url</code> reference at any place within the <code>post_urls_from_blog 'a</code> region,
+but there is no way of doing that around the for loop because <code>blog_url</code> region ends(variable moves out of scope) right before the loop.</p>
+<p>Now we should be able to decipher the error message from the previous chapter:</p>
+<pre><code>   Compiling playground v0.0.1 (/playground)
+error[E0505]: cannot move out of `blog_url` because it is borrowed
+  --&gt; src/main.rs:45:37
+   |
+42 |     let post_urls: Vec&lt;_&gt; = post_urls_from_blog(crawler_results, &amp;blog_url).collect();
+   |                                                                  --------- borrow of `blog_url` occurs here
+...
+45 |     let handle = std::thread::spawn(move || calculate_blog_stats(blog_url));
+   |                                     ^^^^^^^                      -------- move occurs due to use in closure
+   |                                     |
+   |                                     move out of `blog_url` occurs here
+...
+48 |     for url in post_urls {
+   |                --------- borrow later used here
+
+For more information about this error, try `rustc --explain E0505`.
+error: could not compile `playground` due to previous error
+</code></pre>
+<p>Effectively it tells us that at line 42 compiler tries to take a reference to <code>blog_url</code> into a region that ends at line 48, but <code>blog_url</code> region
+ends at line 45, so compiler can't do that. How can we fix this error? 
+One way is to put the for loop before <code>std::thread::spawn</code>. This way the regions will be aligned and
+<code>blog_url</code> will be safe to use at any line of the <code>post_urls_from_blog 'a</code> region. But our code is not executing in parallel this way. </p>
+<pre><code class="language-rust noplayground">fn main() {
+    let crawler_results = &amp;[
+        DiscoveredItem {
+            blog_url: &quot;https://blogs.com/&quot;.to_owned().to_owned(),
+            post_url: &quot;https://blogs.com/cooking/fried_eggs&quot;.to_owned(),
+        },
+        DiscoveredItem {
+            blog_url: &quot;https://blogs.com/&quot;.to_owned(),
+            post_url: &quot;https://blogs.com/travelling/death_mountain&quot;.to_owned(),
+        },
+        DiscoveredItem {
+            blog_url: &quot;https://successfulsam.xyz/&quot;.to_owned(),
+            post_url: &quot;https://successfulsam.xyz/keys_to_success/Just_do_this_one_thing_every_day&quot;.to_owned(),
+        },
+    ];
+/---blog_url region 
+|   let blog_url = get_blog_url(); 
+|
+|/--post_urls_from_blog 'a region
+||  let post_urls: Vec&lt;_&gt; = post_urls_from_blog(crawler_results, &amp;blog_url).collect();
+||
+||  for url in post_urls {
+||      process_post(url);
+||  }
+|-
+|   let handle = std::thread::spawn(move || calculate_blog_stats(blog_url));
+-
+    handle.join().expect(&quot;Everything will be fine&quot;);
+}
+</code></pre>
+<p>Another way is to get away with clones. But let's look at our region carefully:</p>
+<pre><code class="language-rust noplayground">/---blog_url region 
+|   let blog_url = get_blog_url(); 
+|
+|/--post_urls_from_blog 'a region
+||  let post_urls: Vec&lt;_&gt; = post_urls_from_blog(crawler_results, &amp;blog_url).collect();
+||
+||  let handle = std::thread::spawn(move || calculate_blog_stats(blog_url));
+-|
+ |  for url in post_urls {
+ |      process_post(url);
+ |  }
+ -
+</code></pre>
+<p>We don't really need the <code>blog_url</code> reference to be valid inside the for loop, we only care about <code>post_urls</code> there.
+This <code>post_urls_from_blog 'a</code> region is essentially a region for our <code>post_urls</code>, the <code>blog_url</code> region could be much
+smaller, but the function signature asks the compiler to infer only a single region, so the <code>blog_url</code> reference ends up coupled
+with the <code>post_urls</code> references. What we actually want is to ask the compiler to infer 2 regions for this function: the one for <code>post_urls</code>
+and the one for <code>blog_url</code>, so regions in <code>main</code> would look like that.</p>
+<pre><code class="language-rust noplayground">/---blog_url region 
+|   let blog_url = get_blog_url(); 
+|
+|/--post_urls_from_blog 'post_urls region
+||/-post_urls_from_blog 'blog_url region
+||| let post_urls: Vec&lt;_&gt; = post_urls_from_blog(crawler_results, &amp;blog_url).collect();
+||-
+||  let handle = std::thread::spawn(move || calculate_blog_stats(blog_url));
+-|
+ |  for url in post_urls {
+ |      process_post(url);
+ |  }
+ -
+</code></pre>
+<p>This way <code>post_urls_from_blog 'blog_url</code> region is only 1-line long and borrowing <code>blog_url</code> for this line is fine, when <code>post_urls_from_blog 'post_urls</code> region
+holds only <code>post_urls</code> references and doesn't care about the <code>blog_url</code> region at all. Let's try to split this <code>'a</code> region!</p>
+<h2 id="splitting-post_urls_from_blog-a-region"><a class="header" href="#splitting-post_urls_from_blog-a-region">Splitting <code>post_urls_from_blog 'a</code> region</a></h2>
+<p>To ask the compiler to infer 2 regions instead of 1 we just need to introduce a second lifetime parameter to the function signature:</p>
+<pre><code class="language-rust noplayground">fn post_urls_from_blog&lt;'post_urls, 'blog_url&gt;(
+    items: &amp;'post_urls [DiscoveredItem], 
+    blog_url: &amp;'blog_url str,
+) -&gt; impl Iterator&lt;Item = &amp;'post_urls str&gt; {
+    // ...
+}
+</code></pre>
+<p>We're taking post urls from input items, so <code>items</code> clearly belong to <code>post_urls</code> region. We use <code>blog_url</code> only for filtering, so it belongs to its own 
+<code>blog_url</code> region. Iterator returns post urls from the input <code>items</code>, so <code>Item = &amp;str</code> must belong to <code>post_urls</code> region. But what about an <code>Iterator</code> itself?
+We're iterating items, so let's assign it to <code>post_urls</code> region.</p>
+<pre><code class="language-rust noplayground">fn post_urls_from_blog&lt;'post_urls, 'blog_url&gt;(
+    items: &amp;'post_urls [DiscoveredItem], 
+    blog_url: &amp;'blog_url str,
+) -&gt; impl Iterator&lt;Item = &amp;'post_urls str&gt; + 'post_urls {
+    // ...
+}
+</code></pre>
+<p>And now I want to go through one more example to emphasize that borrow checker analyzes each function completely independetly:</p>
+<pre><code class="language-rust noplayground">fn uaf(options: &amp;CrawlerOptions) {
+    let items = crawler::run(options);
+
+    let blog_url = get_blog_url();
+    let iterator = post_urls_from_blog(&amp;items, &amp;blog_url);
+    drop(blog_url);
+
+    for url in iterator {
+        do_stuff(url);
+    }
+}
+</code></pre>
+<p>Let's infer regions for this function:</p>
+<pre><code class="language-rust noplayground">fn uaf(options: &amp;CrawlerOptions) {
+/---items region
+|   let items = crawler::run(options);
+|
+|   let blog_url = get_blog_url();
+|/--post_urls_from_blog 'post_urls region
+||  let iterator = post_urls_from_blog(&amp;items, &amp;blog_url);
+||  drop(blog_url);
+||
+||  for url in iterator {
+||      do_stuff(url);
+||  }
+--
+}
+</code></pre>
+<p><code>post_urls_from_blog 'post_urls</code> holds an iterator, and a reference to the <code>items</code> variable and it can dereference them at any line of this region
+because <code>items</code> region outlives the <code>'post_urls</code> region.</p>
+<pre><code class="language-rust noplayground">fn uaf(options: &amp;CrawlerOptions) {
+    let items = crawler::run(options);
+/---blog_url region
+|   let blog_url = get_blog_url();
+|/--post_urls_from_blog 'blog_url region
+||  let iterator = post_urls_from_blog(&amp;items, &amp;blog_url);
+|-  drop(blog_url);
+-
+    for url in iterator {
+        do_stuff(url);
+    }
+  
+}
+</code></pre>
+<p><code>post_urls_from_blog 'blog_url</code> region holds just a reference to the <code>blog_url</code> variable. It's an input argument, therefore the reference should be valid
+only for the time of the function call, so the region is 1-line long. <code>blog_url</code> region clearly outlives this 1-line region, so it's safe to create a borrow
+there. As the result the <code>uaf</code> function passes the borrow checking just perfectly, but if we think about what's going on, we quickly realize that the iterator
+holds a reference to <code>blog_url</code> internally to do the comparisons, so in fact we have a use after free memory bug here. <code>post_urls_from_blog</code> function
+signature doesn't tell anything about this internal borrow, so borrow checker can't spot any issue while analyzing the <code>uaf</code> function. Luckily for us
+it can spot the issue during the analysis of the <code>post_urls_from_blog</code> function body which is done only once and independently from the <code>uaf</code> function.</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span><span class="boring">struct DiscoveredItem {
+</span><span class="boring">   blog_url: String,
+</span><span class="boring">   post_url: String,
+</span><span class="boring">}
+</span>fn post_urls_from_blog&lt;'post_urls, 'blog_url&gt;(
+    items: &amp;'post_urls [DiscoveredItem], 
+    blog_url: &amp;'blog_url str,
+) -&gt; impl Iterator&lt;Item = &amp;'post_urls str&gt; + 'post_urls {
+    items.iter().filter_map(move |item| {
+        if item.blog_url == blog_url {
+            Some(item.post_url.as_str())
+        } else {
+            None
+        }
+    })
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>The borrow checker emits the following error for this implementation:</p>
+<pre><code>error[E0623]: lifetime mismatch
+  --&gt; src/main.rs:11:6
+   |
+10 |     blog_url: &amp;'blog_url str,
+   |               -------------- this parameter and the return type are declared with different lifetimes...
+11 | ) -&gt; impl Iterator&lt;Item = &amp;'post_urls str&gt; + 'post_urls {
+   |      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |      |
+   |      ...but data from `blog_url` is returned here
+
+For more information about this error, try `rustc --explain E0623`.
+error: could not compile `playground` due to previous error
+</code></pre>
+<p>It was able to spot that the iterator borrows <code>blog_url</code> from the <code>'blog_url</code> region, but the signature
+suggests that the iterator borrows only from the <code>'post_urls</code> region, so the borrow checker threw a <code>lifetime mismatch</code> error.
+Let's reflect this <code>blog_url</code> borrow in our signature by assigning the iterator to the <code>'blog_url</code> region.</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span><span class="boring">struct DiscoveredItem {
+</span><span class="boring">   blog_url: String,
+</span><span class="boring">   post_url: String,
+</span><span class="boring">}
+</span>fn post_urls_from_blog&lt;'post_urls, 'blog_url&gt;(
+    items: &amp;'post_urls [DiscoveredItem], 
+    blog_url: &amp;'blog_url str,
+) -&gt; impl Iterator&lt;Item = &amp;'post_urls str&gt; + 'blog_url {
+    items.iter().filter_map(move |item| {
+        if item.blog_url == blog_url {
+            Some(item.post_url.as_str())
+        } else {
+            None
+        }
+    })
+}
+<span class="boring">}
+</span></code></pre></pre>
+<pre><code>   Compiling playground v0.0.1 (/playground)
+error[E0623]: lifetime mismatch
+  --&gt; src/main.rs:11:6
+   |
+10 |     blog_url: &amp;'blog_url str,
+   |               -------------- this parameter and the return type are declared with different lifetimes...
+11 | ) -&gt; impl Iterator&lt;Item = &amp;'post_urls str&gt; + 'blog_url {
+   |      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |      |
+   |      ...but data from `items` is returned here
+
+For more information about this error, try `rustc --explain E0623`.
+error: could not compile `playground` due to previous error
+</code></pre>
+<p>Compilation failed with the same error. Hmm... it's time to resort to magic!</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span><span class="boring">struct DiscoveredItem {
+</span><span class="boring">   blog_url: String,
+</span><span class="boring">   post_url: String,
+</span><span class="boring">}
+</span>fn post_urls_from_blog&lt;'post_urls, 'blog_url&gt;(
+    items: &amp;'post_urls [DiscoveredItem], 
+    blog_url: &amp;'blog_url str,
+) -&gt; impl Iterator&lt;Item = &amp;'post_urls str&gt; + 'blog_url
+where
+    'post_urls: 'blog_url
+{
+    items.iter().filter_map(move |item| {
+        if item.blog_url == blog_url {
+            Some(item.post_url.as_str())
+        } else {
+            None
+        }
+    })
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>And now everything compiles, including the example from the previous chapter.
+Check it out:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">struct DiscoveredItem {
+</span><span class="boring">   blog_url: String,
+</span><span class="boring">   post_url: String,
+</span><span class="boring">}
+</span><span class="boring">fn post_urls_from_blog&lt;'post_urls, 'blog_url&gt;(
+</span><span class="boring">   items: &amp;'post_urls [DiscoveredItem], 
+</span><span class="boring">   blog_url: &amp;'blog_url str,
+</span><span class="boring">) -&gt; impl Iterator&lt;Item = &amp;'post_urls str&gt; + 'blog_url
+</span><span class="boring">where
+</span><span class="boring">   'post_urls: 'blog_url
+</span><span class="boring">{
+</span><span class="boring">   items.iter().filter_map(move |item| {
+</span><span class="boring">       if item.blog_url == blog_url {
+</span><span class="boring">           Some(item.post_url.as_str())
+</span><span class="boring">       } else {
+</span><span class="boring">           None
+</span><span class="boring">       }
+</span><span class="boring">   })
+</span><span class="boring">}
+</span>fn main() {
+    // Assume the crawler returned the following results
+    let crawler_results = &amp;[
+        DiscoveredItem {
+            blog_url: &quot;https://blogs.com/&quot;.to_owned().to_owned(),
+            post_url: &quot;https://blogs.com/cooking/fried_eggs&quot;.to_owned(),
+        },
+        DiscoveredItem {
+            blog_url: &quot;https://blogs.com/&quot;.to_owned(),
+            post_url: &quot;https://blogs.com/travelling/death_mountain&quot;.to_owned(),
+        },
+        DiscoveredItem {
+            blog_url: &quot;https://successfulsam.xyz/&quot;.to_owned(),
+            post_url: &quot;https://successfulsam.xyz/keys_to_success/Just_do_this_one_thing_every_day&quot;.to_owned(),
+        },
+    ];
+
+    // Reading the blog URL we're interested in from somewhere
+    let blog_url = get_blog_url(); 
+
+    // Collecting post URLs from this blog using our function
+    let post_urls: Vec&lt;_&gt; = post_urls_from_blog(crawler_results, &amp;blog_url).collect();
+
+    // Spawning a thread to do some further blog processing
+    let handle = std::thread::spawn(move || calculate_blog_stats(blog_url));
+
+    // Processing posts in parallel
+    for url in post_urls {
+        process_post(url);
+    }
+
+    handle.join().expect(&quot;Everything will be fine&quot;);
+}
+
+// Returns a predefined value
+fn get_blog_url() -&gt; String {
+    &quot;https://blogs.com/&quot;.to_owned()    
+}
+
+// Just prints URL out
+fn process_post(url: &amp;str) {
+    println!(&quot;{}&quot;, url);
+}
+
+// Actually does nothing
+fn calculate_blog_stats(_blog_url: String) {}
+</code></pre></pre>
+<p>We will demistify the added <code>where</code> clause and will understand the last compilation error in the next chapter,
+but before going further make sure you understood the material from this chapter.</p>
+<h2 id="chapter-exercises"><a class="header" href="#chapter-exercises">Chapter exercises</a></h2>
+<ol>
+<li>The chapter says when we encounter a function call we need to infer minimal regions for it at the invocation point.
+Why do we want these regions to be minimal?</li>
+<li>Assume this signature compiles:</li>
+</ol>
+<pre><code class="language-rust noplayground">fn post_urls_from_blog&lt;'post_urls, 'blog_url&gt;(
+    items: &amp;'post_urls [DiscoveredItem], 
+    blog_url: &amp;'blog_url str,
+) -&gt; impl Iterator&lt;Item = &amp;'post_urls str&gt; + 'blog_url {
+    // ...
+}
+</code></pre>
+<p>Go back to the <code>uaf</code> example. Infer and validate regions for the <code>uaf</code> using this <code>post_urls_from_blog</code> signature.
+Does <code>uaf</code> compile?</p>
+<div class="footnote-definition" id="continuous"><sup class="footnote-definition-label">1</sup>
+<p>The book is written in the NLL era.</p>
+</div>
+<h1 id="lifetime-subtyping"><a class="header" href="#lifetime-subtyping">Lifetime subtyping</a></h1>
+<p><code>'a: 'b</code> reads as <code>'a is subtype of 'b</code>, but mixing types with
+lifetimes is often confusing, so rusteceans prefer to say: <code>lifetime 'a outlives lifetime 'b</code>.
+This <code>outlives</code> relationship implies 2 important things:</p>
+<ul>
+<li>It allows to implicitly cast references with <code>'a</code> lifetime into references with <code>'b</code> lifetime.</li>
+<li>The compiler must assert that <code>'a &gt;= 'b</code> (region <code>'a</code> is the same or wider than region <code>'b</code>)</li>
+</ul>
+<p>Given that <code>'a &gt;= 'b</code> is required and that we're allowed to implicitly cast <code>'a</code> references into <code>'b</code> references,
+I will call these implicit casts - lifetimes shortenings and will denote them like that: <code>'a ~&gt; 'b</code>. Let's go through
+some examples to get used to these concepts.</p>
+<p>Let's start from this pseudocode:</p>
+<pre><code>given 'a: 'b
+
+ref_a: 'a
+ref_b: 'b
+
+ref_b = ref_a // fine, 'a ~&gt; 'b
+ref_a = ref_b // not fine, requires 'b: 'a
+</code></pre>
+<p>We're given <code>'a: 'b</code> and we have 2 references: <code>ref_a</code> belonging to the region <code>'a</code> and <code>ref_b</code> belonging to the region <code>'b</code>.
+<code>'a: 'b</code> implies <code>'a ~&gt; 'b</code> allowing us to assign <code>ref_b</code> to <code>ref_a</code>. By doing that we're sort of moving a reference from a longer <code>'a</code> 
+region into a shorter <code>'b</code> region and this allows us to do some stuff with it on a behalf of the <code>'b</code> region. However, assigning <code>ref_a</code> to <code>ref_b</code> 
+results in a compile error. It requires a <code>'b: 'a</code> precondition to cast <code>'b</code> ref into <code>'a</code> ref, but we only have a <code>'a: 'b</code> precondition.</p>
+<p>In the previous chapter we used a visual approach to show how the borrow checker infers regions. In reality it doesn't work like that. All it does
+is it assumes a new region for every line of code, and then it infers <code>outlives</code> relationships for these regions, and then executes validations based
+on this information. When the borrow checker encounters a function call it doesn't try to be smart and infer anything, it just reads regions
+and relationships between them directly from the function signature and assigns references to those regions. 
+That means when we're annotating our signatures with lifetimes we're doing the great part of the borrow checker's work manually. To get a brief
+feel of how the borrow checker actually operates we'll go through the next example written in real Rust. To make it readable I won't assume a new region
+for every line of code, but I'll assume it for every scope:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>{ // 'a
+    let a = 42;
+    let ref_a = &amp;a; // ref_a belongs to 'a
+    { // 'b. 'b is subscope of a', so `'a: 'b`
+        let b = 24;
+        let mut ref_b = &amp;b; // ref_b belongs to 'b
+        ref_b = ref_a; // 'a: 'b =&gt; 'a ~&gt; 'b
+        println!(&quot;{}&quot;, ref_b); // prints 42
+    }
+
+    println!(&quot;{}&quot;, ref_a); // prints 42
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>The example compiles just fine. It corresponds to the next lines of the pseudocode we met before and works for the same reasons. 
+The only difference is <code>'a: 'b</code> relationship is not given, but inferred from the function scopes:</p>
+<pre><code>inferred 'a: 'b
+
+ref_a: 'a
+ref_b: 'b
+
+ref_b = ref_a // fine, 'a ~&gt; 'b
+</code></pre>
+<p>Now let's try this variation.</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>{ // 'a
+    let a = 42;
+    let mut ref_a = &amp;a; // ref_a belongs to 'a
+    { // 'b. 'b is subscope of a', so `'a: 'b`
+        let b = 24;
+        let ref_b = &amp;b; // ref_b belongs to 'b
+        ref_a = ref_b; // compilation error. No `'b: 'a` relationship
+        println!(&quot;{}&quot;, ref_b); // doesn't compile
+    }
+
+    println!(&quot;{}&quot;, ref_a); // doesn't compile
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>This code corresponds to these lines of the pseudocode above and doesn't compile:</p>
+<pre><code>inferred 'a: 'b
+
+ref_a: 'a
+ref_b: 'b
+
+ref_a = ref_b // not fine, requires 'b: 'a
+</code></pre>
+<p>We can't assign <code>ref_a</code> to <code>ref_b</code> because we didn't infer <code>'b: 'a</code> relationship. We inferred only <code>'a: 'b</code>, so knowing
+that and by further inferring the region boundaries within the function scope compiler was able to produce a user friendly <code>b doesn't live long enough</code>
+error. </p>
+<p>I hope at this point you've already guessed why <code>'a: 'b</code> relationship is required to be able to implicitly cast <code>'a</code> references into <code>'b</code> references.
+In short, we just can't guarantee safety after the cast if <code>'a &gt;= 'b</code> condition is not met. If you don't get why, study the last 2 examples carefully.</p>
+<h2 id="specifying-lifetime-relationships-in-signatures"><a class="header" href="#specifying-lifetime-relationships-in-signatures">Specifying lifetime relationships in signatures</a></h2>
+<p>Returning to our <code>post_urls_from_blog</code> example we had this error</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span><span class="boring">struct DiscoveredItem {
+</span><span class="boring">   blog_url: String,
+</span><span class="boring">   post_url: String,
+</span><span class="boring">}
+</span>fn post_urls_from_blog&lt;'post_urls, 'blog_url&gt;(
+    items: &amp;'post_urls [DiscoveredItem], 
+    blog_url: &amp;'blog_url str,
+) -&gt; impl Iterator&lt;Item = &amp;'post_urls str&gt; + 'blog_url {
+    items.iter().filter_map(move |item| {
+        if item.blog_url == blog_url {
+            Some(item.post_url.as_str())
+        } else {
+            None
+        }
+    })
+}
+<span class="boring">}
+</span></code></pre></pre>
+<pre><code>   Compiling playground v0.0.1 (/playground)
+error[E0623]: lifetime mismatch
+  --&gt; src/main.rs:11:6
+   |
+10 |     blog_url: &amp;'blog_url str,
+   |               -------------- this parameter and the return type are declared with different lifetimes...
+11 | ) -&gt; impl Iterator&lt;Item = &amp;'post_urls str&gt; + 'blog_url {
+   |      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |      |
+   |      ...but data from `items` is returned here
+
+For more information about this error, try `rustc --explain E0623`.
+error: could not compile `playground` due to previous error
+</code></pre>
+<p>The error is a bit tricky because the root cause lies at this particular dot:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span><span class="boring">struct DiscoveredItem {
+</span><span class="boring">   blog_url: String,
+</span><span class="boring">   post_url: String,
+</span><span class="boring">}
+</span>fn post_urls_from_blog&lt;'post_urls, 'blog_url&gt;(
+    items: &amp;'post_urls [DiscoveredItem], 
+    blog_url: &amp;'blog_url str,
+) -&gt; impl Iterator&lt;Item = &amp;'post_urls str&gt; + 'blog_url {
+    items.iter().filter_map(move |item| {
+// here---------^ 
+        if item.blog_url == blog_url {
+            Some(item.post_url.as_str())
+        } else {
+            None
+        }
+    })
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>Let's examine what happens in between of the <code>iter()</code> and <code>filter_map()</code> calls. <code>iter()</code> returns an 
+<code>Iterator</code> from <code>items</code> and this iterator is bounded by <code>'post_urls</code> lifetime. <code>filter_map()</code> takes the <code>items</code>
+iterator, but also captures the <code>blog_url</code> with <code>'blog_url</code> lifetime in the closure, and we expect the resulting iterator to be bounded by
+'<code>blog_url</code> lifetime. We can represent what's happening with the following function:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn dot&lt;'post_urls, 'blog_url&gt;(
+    iter: impl Iterator&lt;Item = ()&gt; + 'post_urls,
+) -&gt; impl Iterator&lt;Item = ()&gt; + 'blog_url
+{
+    iter
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>The function doesn't compile. The cast from <code>Iterator + 'post_urls</code> into <code>Iterator + 'blog_url</code> is prohibited because
+<code>'post_urls</code> and <code>'blog_url</code> lifetimes are unrelated. In order to make the cast possible we need to introduce a relationship
+between the lifetimes. We want to cast(shorten) <code>'post_urls</code> into <code>'blog_url</code> therefore we need a <code>'post_urls: 'blog_url</code>
+relationship. Let's type it out. </p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn dot&lt;'post_urls, 'blog_url&gt;(
+    iter: impl Iterator&lt;Item = ()&gt; + 'post_urls,
+) -&gt; impl Iterator&lt;Item = ()&gt; + 'blog_url
+where
+    'post_urls: 'blog_url
+{
+    iter
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>Now, with this additional bit of information the funciton does compile. The relationships between lifetimes
+aren't inferred between the function calls, we need to specify them manually in order to apply casts we want
+in the function body. Adding <code>where 'post_urls: 'blog_url</code> to <code>post_urls_from_blog</code> makes <code>items.iter()</code> cast
+into <code>Iterator + 'blog_url</code> cast valid and the function now compiles for the same reason.</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span><span class="boring">struct DiscoveredItem {
+</span><span class="boring">   blog_url: String,
+</span><span class="boring">   post_url: String,
+</span><span class="boring">}
+</span>fn post_urls_from_blog&lt;'post_urls, 'blog_url&gt;(
+    items: &amp;'post_urls [DiscoveredItem], 
+    blog_url: &amp;'blog_url str,
+) -&gt; impl Iterator&lt;Item = &amp;'post_urls str&gt; + 'blog_url 
+where
+    'post_urls: 'blog_url
+{
+
+    items.iter().filter_map(move |item| {
+        if item.blog_url == blog_url {
+            Some(item.post_url.as_str())
+        } else {
+            None
+        }
+    })
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>But what if we had used <code>'blog_url: 'post_urls</code> relationship instead?</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span><span class="boring">struct DiscoveredItem {
+</span><span class="boring">   blog_url: String,
+</span><span class="boring">   post_url: String,
+</span><span class="boring">}
+</span>fn post_urls_from_blog&lt;'post_urls, 'blog_url&gt;(
+    items: &amp;'post_urls [DiscoveredItem], 
+    blog_url: &amp;'blog_url str,
+) -&gt; impl Iterator&lt;Item = &amp;'post_urls str&gt; + 'post_urls
+where
+    'blog_url: 'post_urls
+{
+
+    items.iter().filter_map(move |item| {
+        if item.blog_url == blog_url {
+            Some(item.post_url.as_str())
+        } else {
+            None
+        }
+    })
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>Now instead of casting <code>items.iter()</code> we're casting the borrow of the <code>blog_url</code> in the <code>filter_map</code> closure <code>'blog_url ~&gt; 'post_urls</code>, so the
+resulting iterator appears to be <code>Iterator + 'post_urls</code> as shown in the updated function signature and this signature compiles too.
+What's the difference? To understand why this is not what we want we need to remember the second implication of <code>'a: 'b</code> relationship:</p>
+<ul>
+<li>The compiler must assert that <code>'a &gt;= 'b</code> (region <code>'a</code> is the same or wider than region <code>'b</code>)</li>
+</ul>
+<p>Let's return to the caller site and infer the regions for this signature. We will continue to use the visual approach introduced
+in the previous chapter because even if it's not what compiler actually does it works quite well for humans.
+Ok, so we need to infer 2 regions by <em>the last usage</em> rule and we actually already did that in the previous chapter:</p>
+<pre><code class="language-rust noplayground">/---blog_url region 
+|   let blog_url = get_blog_url(); 
+|
+|/--post_urls_from_blog 'post_urls region
+||/-post_urls_from_blog 'blog_url region
+||| let post_urls: Vec&lt;_&gt; = post_urls_from_blog(crawler_results, &amp;blog_url).collect();
+||-
+||  let handle = std::thread::spawn(move || calculate_blog_stats(blog_url));
+-|
+ |  for url in post_urls {
+ |      process_post(url);
+ |  }
+ -
+</code></pre>
+<p>But now we have an extra precondition in our <code>post_urls_from_blog</code> function signature that <code>'blog_url</code> must be as wide as <code>'post_urls</code>
+region or wider, so we need to extend <code>post_urls_from_blog 'blog_url</code> region to meet this requirement.</p>
+<pre><code class="language-rust noplayground">/---blog_url region 
+|   let blog_url = get_blog_url(); 
+|
+|/--post_urls_from_blog 'post_urls region
+||/-post_urls_from_blog 'blog_url region
+||| let post_urls: Vec&lt;_&gt; = post_urls_from_blog(crawler_results, &amp;blog_url).collect();
+|||
+||| let handle = std::thread::spawn(move || calculate_blog_stats(blog_url));
+-||
+ || for url in post_urls {
+ ||     process_post(url);
+ || }
+ --
+</code></pre>
+<p>As the result <code>post_urls_from_blog 'blog_url</code> and <code>blog_url</code> regions are not aligned and we have a conflict and the same compiler
+error we were struggling with from the beginning. We know that the region for the iterator must be shorter because, usually, iterators
+live less then the items they yield, but we failed to communicate this to compiler and our signature requires the region for the <code>Iterator</code> 
+to be as wide or wider then the region for the items it yields which is clearly wrong, so we must stick with the <code>'post_urls: 'blog_url</code> relationship.
+The regions for it will look as we want:</p>
+<pre><code class="language-rust noplayground">/---blog_url region 
+|   let blog_url = get_blog_url(); 
+|
+|/--post_urls_from_blog 'post_urls region
+||/-post_urls_from_blog 'blog_url region
+||| let post_urls: Vec&lt;_&gt; = post_urls_from_blog(crawler_results, &amp;blog_url).collect();
+||-
+||  let handle = std::thread::spawn(move || calculate_blog_stats(blog_url));
+-|
+ |  for url in post_urls {
+ |      process_post(url);
+ |  }
+ -
+</code></pre>
+<p><code>post_urls_from_blog 'post_urls &gt; post_urls_from_blog 'blog_url</code>, so no extra region expansion is required and everything compiles just fine.</p>
+<p>Hope, this example was sufficient to show that lifetimes subtyping isn't a rocket science and is very straighforward to work with. The important
+thing to remember is when you define a signature you manually specify how many regions the compiler needs to infer and 
+what relationships are between them. The relationships come from the &quot;casts&quot; you want to use in the function body, and specifying them
+results in possible extra region expansions on the caller site. However, to have a full picture, we also need to learn about the lifetime variance.</p>
+<h2 id="chapter-exercises-1"><a class="header" href="#chapter-exercises-1">Chapter exercises</a></h2>
+<p>Analyze and write down the equivalent to the following signature: </p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span><span class="boring">struct DiscoveredItem {
+</span><span class="boring">   blog_url: String,
+</span><span class="boring">   post_url: String,
+</span><span class="boring">}
+</span>fn post_urls_from_blog&lt;'post_urls, 'blog_url&gt;(
+    items: &amp;'post_urls [DiscoveredItem], 
+    blog_url: &amp;'blog_url str,
+) -&gt; impl Iterator&lt;Item = &amp;'post_urls str&gt; + 'blog_url 
+where
+    'post_urls: 'blog_url,
+    'blog_url: 'post_urls
+{
+
+    items.iter().filter_map(move |item| {
+        if item.blog_url == blog_url {
+            Some(item.post_url.as_str())
+        } else {
+            None
+        }
+    })
+}
+<span class="boring">}
+</span></code></pre></pre>
+<h1 id="introduction-to-variance"><a class="header" href="#introduction-to-variance">Introduction to variance</a></h1>
+<h1 id="a-word-about-implied-bounds"><a class="header" href="#a-word-about-implied-bounds">A word about implied bounds</a></h1>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+
+                
+            </nav>
+
+        </div>
+
+        
+        <!-- Livereload script (if served using the cli tool) -->
+        <script type="text/javascript">
+            var socket = new WebSocket("ws://localhost:3000/__livereload");
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+        
+
+        
+
+        
+
+        
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+
+        
+
+        
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+        
+        <script type="text/javascript">
+        window.addEventListener('load', function() {
+            window.setTimeout(window.print, 100);
+        });
+        </script>
+        
+        
+
+    </body>
+</html>

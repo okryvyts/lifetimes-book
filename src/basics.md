@@ -3,7 +3,7 @@
 _Disclaimer: It's recommended to follow the example by retyping it in your favorite editor_
 
 Imagine we're writing a web crawler. We're collecting posts from different blogs.
-The crawler's output looks like this:
+The crawler's output looks like that:
 
 ```rust
 struct DiscoveredItem {

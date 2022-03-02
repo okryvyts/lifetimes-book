@@ -287,7 +287,7 @@ region or wider, so we need to extend `post_urls_from_blog 'blog_url` region to 
 As the result `post_urls_from_blog 'blog_url` and `blog_url` regions are not aligned and we have a conflict and the same compiler
 error we were struggling with from the beginning. We know that the region for the iterator must be shorter because, usually, iterators
 live less then the items they yield, but we failed to communicate this to compiler and our signature requires the region for the `Iterator` 
-to be as wide or wider then the region for the items it yields which is clearly wrong, so we must stick with the `'post_urls: 'blog_url` relationship.
+to be as wide or wider then the region for its items which is wrong, so we must stick with the `'post_urls: 'blog_url` relationship.
 The regions for it will look as we want:
 
 ```rust,noplayground
@@ -310,7 +310,7 @@ The regions for it will look as we want:
 
 Hope, this example was sufficient to show that lifetimes subtyping isn't a rocket science and is very straighforward to work with. The important
 thing to remember is when you define a signature you manually specify how many regions the compiler needs to infer and 
-what relationships are between them. The relationships come from the "casts" you want to use in the function body, and specifying them
+what relationships are between them. The relationships come from the "casts" you want to perform in your function body, and specifying them
 results in possible extra region expansions on the caller site. However, to have a full picture, we also need to learn about the lifetime variance.
 
 ## Chapter exercises

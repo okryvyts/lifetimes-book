@@ -606,7 +606,7 @@ error: could not compile `playground` due to previous error
 
 It was able to spot that the iterator borrows `blog_url` from the `'blog_url` region, but the signature
 suggests that the iterator borrows only from the `'post_urls` region, so the borrow checker threw a `lifetime mismatch` error.
-Let's reflect this `blog_url` borrow in our signature by assigning the iterator to the `'blog_url` region.
+So we must reflect this `blog_url` borrow in our signature by assigning the iterator to the `'blog_url` region.
 
 ```rust
 #struct DiscoveredItem {
@@ -643,7 +643,7 @@ For more information about this error, try `rustc --explain E0623`.
 error: could not compile `playground` due to previous error
 ```
 
-Compilation failed with the same error. Hmm... it's time to resort to magic!
+Compilation fails with the same error. However, the signature is fine and communicates what we want now. Hmm... It's time to resort to magic!
 
 ```rust
 #struct DiscoveredItem {

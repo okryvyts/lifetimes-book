@@ -688,7 +688,7 @@ error: could not compile `playground` due to previous error
 </code></pre>
 <p>It was able to spot that the iterator borrows <code>blog_url</code> from the <code>'blog_url</code> region, but the signature
 suggests that the iterator borrows only from the <code>'post_urls</code> region, so the borrow checker threw a <code>lifetime mismatch</code> error.
-Let's reflect this <code>blog_url</code> borrow in our signature by assigning the iterator to the <code>'blog_url</code> region.</p>
+So we must reflect this <code>blog_url</code> borrow in our signature by assigning the iterator to the <code>'blog_url</code> region.</p>
 <pre><pre class="playground"><code class="language-rust">
 <span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -724,7 +724,7 @@ error[E0623]: lifetime mismatch
 For more information about this error, try `rustc --explain E0623`.
 error: could not compile `playground` due to previous error
 </code></pre>
-<p>Compilation failed with the same error. Hmm... it's time to resort to magic!</p>
+<p>Compilation fails with the same error. However, the signature is fine and communicates what we want now. Hmm... It's time to resort to magic!</p>
 <pre><pre class="playground"><code class="language-rust">
 <span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {

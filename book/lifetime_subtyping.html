@@ -4,37 +4,25 @@
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
         <title>Lifetime subtyping</title>
-        
-        
 
 
         <!-- Custom HTML head -->
         
-
-
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff" />
 
-        
         <link rel="icon" href="favicon.svg">
-        
-        
         <link rel="shortcut icon" href="favicon.png">
-        
         <link rel="stylesheet" href="css/variables.css">
         <link rel="stylesheet" href="css/general.css">
         <link rel="stylesheet" href="css/chrome.css">
-        
         <link rel="stylesheet" href="css/print.css" media="print">
-        
 
         <!-- Fonts -->
         <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
-        
         <link rel="stylesheet" href="fonts/fonts.css">
-        
 
         <!-- Highlight.js Stylesheets -->
         <link rel="stylesheet" href="highlight.css">
@@ -42,9 +30,7 @@
         <link rel="stylesheet" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
-        
 
-        
     </head>
     <body>
         <!-- Provide site root to javascript -->
@@ -103,8 +89,7 @@
         <div id="page-wrapper" class="page-wrapper">
 
             <div class="page">
-                
-                <div id="menu-bar-hover-placeholder"></div>
+                                <div id="menu-bar-hover-placeholder"></div>
                 <div id="menu-bar" class="menu-bar sticky bordered">
                     <div class="left-buttons">
                         <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
@@ -120,29 +105,24 @@
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
-                        
                         <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
-                        
                     </div>
 
                     <h1 class="menu-title"></h1>
 
                     <div class="right-buttons">
-                        
                         <a href="print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
-                        
-                        
+
                     </div>
                 </div>
 
-                
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -150,7 +130,6 @@
                         </ul>
                     </div>
                 </div>
-                
 
                 <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
                 <script type="text/javascript">
@@ -186,9 +165,9 @@ ref_a = ref_b // not fine, requires 'b: 'a
 <p>We're given <code>'a: 'b</code> and we have 2 references: <code>ref_a</code> belonging to the region <code>'a</code> and <code>ref_b</code> belonging to the region <code>'b</code>.
 <code>'a: 'b</code> implies <code>'a ~&gt; 'b</code> allowing us to assign <code>ref_b</code> to <code>ref_a</code>. By doing that we're sort of moving a reference from a longer <code>'a</code> 
 region into a shorter <code>'b</code> region and this allows us to do some stuff with it on a behalf of the <code>'b</code> region. However, assigning <code>ref_a</code> to <code>ref_b</code> 
-results in a compile error. It requires a <code>'b: 'a</code> precondition to cast <code>'b</code> ref into <code>'a</code> ref, but we only have a <code>'a: 'b</code> precondition.</p>
+results in a compile error. It requires a <code>'b: 'a</code> relationship to cast <code>'b</code> ref into <code>'a</code> ref, but we only have a <code>'a: 'b</code> relationship.</p>
 <p>In the previous chapter we used a visual approach to show how the borrow checker infers regions. In reality it doesn't work like that. All it does
-is it assumes a new region for every line of code, and then it infers <code>outlives</code> relationships for these regions, and then executes validations based
+is it assumes a new region for every line of code, infers <code>outlives</code> relationships for those regions, and then executes validations based
 on this information. When the borrow checker encounters a function call it doesn't try to be smart and infer anything, it just reads regions
 and relationships between them directly from the function signature and assigns references to those regions. 
 That means when we're annotating our signatures with lifetimes we're doing the great part of the borrow checker's work manually. To get a brief
@@ -312,24 +291,24 @@ error: could not compile `playground` due to previous error
 <span class="boring">}
 </span></code></pre></pre>
 <p>Let's examine what happens in between of the <code>iter()</code> and <code>filter_map()</code> calls. <code>iter()</code> returns an 
-<code>Iterator</code> from <code>items</code> and this iterator is bounded by <code>'post_urls</code> lifetime. <code>filter_map()</code> takes the <code>items</code>
-iterator, but also captures the <code>blog_url</code> with <code>'blog_url</code> lifetime in the closure, and we expect the resulting iterator to be bounded by
-'<code>blog_url</code> lifetime. We can represent what's happening with the following function:</p>
+<code>Iterator</code> from <code>items</code> and this iterator belongs to <code>'post_urls</code> region. <code>filter_map()</code> takes the <code>items</code>
+iterator, but also captures the <code>blog_url</code> from the <code>'blog_url</code> region in the closure, and we expect the resulting iterator to belong to the
+'<code>blog_url</code> region. We can represent what's happening with the following function:</p>
 <pre><pre class="playground"><code class="language-rust">
 <span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>fn dot&lt;'post_urls, 'blog_url&gt;(
-    iter: impl Iterator&lt;Item = ()&gt; + 'post_urls,
+    input: impl Iterator&lt;Item = ()&gt; + 'post_urls,
 ) -&gt; impl Iterator&lt;Item = ()&gt; + 'blog_url
 {
-    iter
+    input
 }
 <span class="boring">}
 </span></code></pre></pre>
 <p>The function doesn't compile. The cast from <code>Iterator + 'post_urls</code> into <code>Iterator + 'blog_url</code> is prohibited because
 <code>'post_urls</code> and <code>'blog_url</code> lifetimes are unrelated. In order to make the cast possible we need to introduce a relationship
-between the lifetimes. We want to cast(shorten) <code>'post_urls</code> into <code>'blog_url</code> therefore we need a <code>'post_urls: 'blog_url</code>
-relationship. Let's type it out. </p>
+between the regions. We want to be able to cast(shorten) <code>'post_urls</code> references into <code>'blog_url</code> references 
+therefore we need a <code>'post_urls: 'blog_url</code> relationship. Let's type it out. </p>
 <pre><pre class="playground"><code class="language-rust">
 <span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -346,7 +325,8 @@ where
 <p>Now, with this additional bit of information the funciton does compile. The relationships between lifetimes
 aren't inferred between the function calls, we need to specify them manually in order to apply casts we want
 in the function body. Adding <code>where 'post_urls: 'blog_url</code> to <code>post_urls_from_blog</code> makes <code>items.iter()</code> cast
-into <code>Iterator + 'blog_url</code> cast valid and the function now compiles for the same reason.</p>
+into <code>Iterator + 'blog_url</code> valid. Adding this <code>where</code> clause to our <code>post_urls_from_blog</code> function 
+makes it compile for the same reason.</p>
 <pre><pre class="playground"><code class="language-rust">
 <span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -398,8 +378,9 @@ where
 }
 <span class="boring">}
 </span></code></pre></pre>
-<p>Now instead of casting <code>items.iter()</code> we're casting the borrow of the <code>blog_url</code> in the <code>filter_map</code> closure <code>'blog_url ~&gt; 'post_urls</code>, so the
-resulting iterator appears to be <code>Iterator + 'post_urls</code> as shown in the updated function signature and this signature compiles too.
+<p>Now instead of casting <code>items.iter()</code> which belongs to <code>'post_urls</code> we're casting the borrow of 
+the <code>blog_url</code> in the <code>filter_map</code> closure <code>'blog_url ~&gt; 'post_urls</code>, so the resulting iterator appears 
+to be <code>Iterator + 'post_urls</code> as shown in the updated function signature and this signature compiles too.
 What's the difference? To understand why this is not what we want we need to remember the second implication of <code>'a: 'b</code> relationship:</p>
 <ul>
 <li>The compiler must assert that <code>'a &gt;= 'b</code> (region <code>'a</code> is the same or wider than region <code>'b</code>)</li>
@@ -440,7 +421,7 @@ region or wider, so we need to extend <code>post_urls_from_blog 'blog_url</code>
 <p>As the result <code>post_urls_from_blog 'blog_url</code> and <code>blog_url</code> regions are not aligned and we have a conflict and the same compiler
 error we were struggling with from the beginning. We know that the region for the iterator must be shorter because, usually, iterators
 live less then the items they yield, but we failed to communicate this to compiler and our signature requires the region for the <code>Iterator</code> 
-to be as wide or wider then the region for its items which is wrong, so we must stick with the <code>'post_urls: 'blog_url</code> relationship.
+to be as wide or wider than the region for its items which is wrong, so we must stick with the <code>'post_urls: 'blog_url</code> relationship.
 The regions for it will look as we want:</p>
 <pre><code class="language-rust noplayground">/---blog_url region 
 |   let blog_url = get_blog_url(); 
@@ -457,10 +438,12 @@ The regions for it will look as we want:</p>
  -
 </code></pre>
 <p><code>post_urls_from_blog 'post_urls &gt; post_urls_from_blog 'blog_url</code>, so no extra region expansion is required and everything compiles just fine.</p>
-<p>Hope, this example was sufficient to show that lifetimes subtyping isn't a rocket science and is very straighforward to work with. The important
+<p>Hope, this example was sufficient to show that lifetime subtyping is very straighforward to work with. The important
 thing to remember is when you define a signature you manually specify how many regions the compiler needs to infer and 
-what relationships are between them. The relationships come from the &quot;casts&quot; you want to perform in your function body, and specifying them
-results in possible extra region expansions on the caller site. However, to have a full picture, we also need to learn about the lifetime variance.</p>
+what relationships are between them. The relationships come from the &quot;lifetime casts&quot; you want to perform in your function body, and specifying them
+results in possible extra region expansions on the caller site, so you need to think ahead which regions 
+can be shorter than others. If regions should be the same replace them with a single region.
+However, there is one more important thing to consider. To fully grasp lifetime mechanics we need to learn about lifetime variance.</p>
 <h2 id="chapter-exercises"><a class="header" href="#chapter-exercises">Chapter exercises</a></h2>
 <p>Analyze and write down the equivalent to the following signature: </p>
 <pre><pre class="playground"><code class="language-rust">
@@ -494,17 +477,13 @@ where
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                        
                             <a rel="prev" href="borrow_checking.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
-                        
 
-                        
                             <a rel="next" href="intro_to_variance.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
-                        
 
                         <div style="clear: both"></div>
                     </nav>
@@ -512,22 +491,17 @@ where
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                
                     <a rel="prev" href="borrow_checking.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
-                
 
-                
                     <a rel="next" href="intro_to_variance.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
-                
             </nav>
 
         </div>
 
-        
         <!-- Livereload script (if served using the cli tool) -->
         <script type="text/javascript">
             var socket = new WebSocket("ws://localhost:3000/__livereload");
@@ -542,34 +516,24 @@ where
                 socket.close();
             }
         </script>
-        
 
-        
 
-        
 
-        
         <script type="text/javascript">
             window.playground_copyable = true;
         </script>
-        
 
-        
 
-        
         <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
         <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
         <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
-        
 
         <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
         <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
         <script src="book.js" type="text/javascript" charset="utf-8"></script>
 
         <!-- Custom JS scripts -->
-        
 
-        
 
     </body>
 </html>

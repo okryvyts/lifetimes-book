@@ -483,7 +483,7 @@ This way `post_urls_from_blog 'blog_url` region is only 1-line long and borrowin
 holds only `post_urls` references and doesn't care about the `blog_url` region at all. Let's try to split this `'a` region!
 
 ## Splitting `post_urls_from_blog 'a` region
-To ask the compiler to infer 2 regions instead of 1 we just need to introduce a second lifetime parameter to the function signature:
+To ask the compiler to infer 2 regions instead of 1 we just need to introduce a second lifetime parameter in the function signature:
 
 ```rust,noplayground
 fn post_urls_from_blog<'post_urls, 'blog_url>(
@@ -496,7 +496,7 @@ fn post_urls_from_blog<'post_urls, 'blog_url>(
 
 We're taking post urls from input items, so `items` clearly belong to `post_urls` region. We use `blog_url` only for filtering, so it belongs to its own 
 `blog_url` region. Iterator returns post urls from the input `items`, so `Item = &str` must belong to `post_urls` region. But what about an `Iterator` itself?
-We're iterating items, so let's assign it to `post_urls` region.
+We're iterating `items`, so let's assign it to `post_urls` region.
 
 ```rust,noplayground
 fn post_urls_from_blog<'post_urls, 'blog_url>(
@@ -507,7 +507,8 @@ fn post_urls_from_blog<'post_urls, 'blog_url>(
 }
 ```
 
-And now I want to go through one more example to emphasize that borrow checker analyzes each function completely independetly:
+Now we will infer new regions for the updated signature, but in a bit different context to
+emphasize that borrow checker analyzes each function completely independetly:
 
 ```rust,noplayground
 fn uaf(options: &CrawlerOptions) {
@@ -523,7 +524,7 @@ fn uaf(options: &CrawlerOptions) {
 }
 ```
 
-Let's infer regions for this function:
+Let's infer regions in the `uaf` function:
 
 ```rust,noplayground
 fn uaf(options: &CrawlerOptions) {
@@ -606,7 +607,7 @@ error: could not compile `playground` due to previous error
 
 It was able to spot that the iterator borrows `blog_url` from the `'blog_url` region, but the signature
 suggests that the iterator borrows only from the `'post_urls` region, so the borrow checker threw a `lifetime mismatch` error.
-So we must reflect this `blog_url` borrow in our signature by assigning the iterator to the `'blog_url` region.
+In order to fix it we must reflect this `blog_url` borrow in our signature by assigning the iterator to the `'blog_url` region.
 
 ```rust
 #struct DiscoveredItem {
@@ -643,7 +644,7 @@ For more information about this error, try `rustc --explain E0623`.
 error: could not compile `playground` due to previous error
 ```
 
-Compilation fails with the same error. However, the signature is fine and communicates what we want now. Hmm... It's time to resort to magic!
+But compilation fails with the same error. However, the signature is fine and communicates what we want now. Hmm... It's time to resort to magic!
 
 ```rust
 #struct DiscoveredItem {
@@ -756,6 +757,5 @@ fn post_urls_from_blog<'post_urls, 'blog_url>(
 
 Go back to the `uaf` example. Infer and validate regions for the `uaf` using this `post_urls_from_blog` signature.
 Does `uaf` compile?
-
 
 [^continuous]: The book is written in the NLL era.

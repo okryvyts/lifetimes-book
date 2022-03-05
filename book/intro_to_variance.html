@@ -4,37 +4,25 @@
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
         <title>Introduction to variance</title>
-        
-        
 
 
         <!-- Custom HTML head -->
         
-
-
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff" />
 
-        
         <link rel="icon" href="favicon.svg">
-        
-        
         <link rel="shortcut icon" href="favicon.png">
-        
         <link rel="stylesheet" href="css/variables.css">
         <link rel="stylesheet" href="css/general.css">
         <link rel="stylesheet" href="css/chrome.css">
-        
         <link rel="stylesheet" href="css/print.css" media="print">
-        
 
         <!-- Fonts -->
         <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
-        
         <link rel="stylesheet" href="fonts/fonts.css">
-        
 
         <!-- Highlight.js Stylesheets -->
         <link rel="stylesheet" href="highlight.css">
@@ -42,9 +30,7 @@
         <link rel="stylesheet" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
-        
 
-        
     </head>
     <body>
         <!-- Provide site root to javascript -->
@@ -103,8 +89,7 @@
         <div id="page-wrapper" class="page-wrapper">
 
             <div class="page">
-                
-                <div id="menu-bar-hover-placeholder"></div>
+                                <div id="menu-bar-hover-placeholder"></div>
                 <div id="menu-bar" class="menu-bar sticky bordered">
                     <div class="left-buttons">
                         <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
@@ -120,29 +105,24 @@
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
-                        
                         <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
-                        
                     </div>
 
                     <h1 class="menu-title"></h1>
 
                     <div class="right-buttons">
-                        
                         <a href="print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
-                        
-                        
+
                     </div>
                 </div>
 
-                
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -150,7 +130,6 @@
                         </ul>
                     </div>
                 </div>
-                
 
                 <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
                 <script type="text/javascript">
@@ -164,22 +143,288 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="introduction-to-variance"><a class="header" href="#introduction-to-variance">Introduction to variance</a></h1>
+<p>Suppose we have the following generic structure:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct S&lt;T: ?Sized&gt;(RustT);
+<span class="boring">}
+</span></code></pre></pre>
+<p>Let's define a function with a lifetime cast:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span><span class="boring">struct S&lt;T: ?Sized&gt;(T);
+</span>fn shortener&lt;'a: 'b, 'b&gt;(s: S&lt;&amp;'a str&gt;) -&gt; S&lt;&amp;'b str&gt; {
+    s
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>As we have learnt from the previous chapter the function compiles because there is a <code>'a: 'b</code> bound, so <code>'a ~&gt; 'b</code> is allowed.
+We can simplify the example a bit. In Rust there is an implicit rule for the <code>'static</code> lifetime that <code>forall 'a | 'static: 'a</code>,
+so the following signature compiles too.</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span><span class="boring">struct S&lt;T&gt;(T);
+</span>// implicit 'static: 'a
+fn shortener&lt;'a&gt;(s: S&lt;&amp;'static str&gt;) -&gt; S&lt;&amp;'a str&gt; {
+    s
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>Now let's replace our generic struct with a <code>Cell</code> struct from the core library which is defined approximately the same way:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct Cell&lt;T: ?Sized&gt; {
+    value: UnsafeCell&lt;T&gt;
+}
+
+struct UnsafeCell&lt;T: ?Sized&gt; {
+    value: T
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>And we have a compilation error:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::cell::Cell;
+fn shortener&lt;'a&gt;(cell: Cell&lt;&amp;'static str&gt;) -&gt; Cell&lt;&amp;'a str&gt; {
+    cell
+}
+<span class="boring">}
+</span></code></pre></pre>
+<pre><code class="language-Compiling playground v0.0.1 (/playground)">error[E0308]: mismatched types
+ --&gt; src/main.rs:6:5
+  |
+6 |     cell
+  |     ^^^^ lifetime mismatch
+  |
+  = note: expected struct `Cell&lt;&amp;'a str&gt;`
+             found struct `Cell&lt;&amp;'static str&gt;`
+note: the lifetime `'a` as defined here...
+ --&gt; src/main.rs:5:14
+  |
+5 | fn shortener&lt;'a&gt;(cell: Cell&lt;&amp;'static str&gt;) -&gt; Cell&lt;&amp;'a str&gt; {
+  |              ^^
+  = note: ...does not necessarily outlive the static lifetime
+
+For more information about this error, try `rustc --explain E0308`.
+error: could not compile `playground` due to previous error
+</code></pre>
+<p>We get the same compilation error if we omit specifying the <code>'a: 'b</code> relationship in our original example:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span><span class="boring">struct S&lt;T: ?Sized&gt;(T);
+</span>fn shortener&lt;'a, 'b&gt;(s: S&lt;&amp;'a str&gt;) -&gt; S&lt;&amp;'b str&gt; {
+    s
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>So it looks like <code>Cell</code> is somewhat exceptional and <code>'a: 'b</code> doesn't work for it for some reason. Let's 
+figure out why we want to have exceptions from the rules we've learnt in the first place.</p>
+<p>Assume the following function compiles</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::cell::Cell;
+fn shortener&lt;'cell, 'a&gt;(cell: &amp;'cell Cell&lt;&amp;'static str&gt;, s: &amp;'a str) -&gt; &amp;'cell Cell&lt;&amp;'a str&gt; {
+    cell.set(s);
+    cell
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>Let's infer the regions in this function:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn uaf() {
+    let cell = Cell::new(&quot;Static str&quot;);
+    let s = String::new(&quot;UAF&quot;);
+
+    let cell2 = shortener(&amp;cell, &amp;s);
+    drop(s);
+    println!(&quot;{}&quot;, cell2);
+    
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>We need to infer 2 regions: <code>'cell</code> and <code>'a</code> following the last usage rule.</p>
+<pre><code>fn uaf() {
+/--- cell region
+|   let cell = Cell::new(&quot;Static str&quot;);
+|   let s = String::new(&quot;UAF&quot;);
+|
+|/-- shortener 'cell region
+||   let cell2 = shortener(&amp;cell, &amp;s);
+||   drop(s);
+||   println!(&quot;{}&quot;, cell2);
+|-
+-    
+}
+</code></pre>
+<p>The <code>'cell</code> holds a reference to <code>cell</code> and a <code>cell2</code> output reference. <code>&amp;cell</code> is a regular input reference without additional bounds, 
+so the region for it is one line long, however <code>cell2</code> is used in the print statement, so the region was expanded to be 3 lines long.
+<code>cell region</code> outlives the <code>shortener 'cell</code> region, so we can take a reference and dereference it at any line within the <code>'shortener cell</code>
+region, there are no errors at this point.</p>
+<pre><code>fn uaf() {
+    let cell = Cell::new(&quot;Static str&quot;);
+/--- s region
+|   let s = String::new(&quot;UAF&quot;);
+|
+|/-- shortener 'a region
+||   let cell2 = shortener(&amp;cell, &amp;s);
+||   drop(s);
+-|   println!(&quot;{}&quot;, cell2);
+ -
+     
+}
+</code></pre>
+<p>The <code>shortener 'a</code> region holds a reference to <code>s</code> and an internal reference inside the <code>cell2</code>(we can think it holds cell2 itself for simplicity). <code>&amp;s</code> is a regular
+input reference, so <code>'a</code> with respect of <code>&amp;s</code> is only one line long, however <code>cell2</code> is used in the print statement which makes <code>shortener 'a</code> region 3 lines
+long. But we can't dereference <code>&amp;s</code> at the line with <code>println!</code> because the <code>s</code> region ends right before the <code>println!</code> statement.
+There is an error and compiler successfully caught a use after free bug. However, <code>cell</code> is still in scope, so instead of using <code>cell2</code> we could have used <code>cell</code>
+in the print statement:</p>
+<pre><code>fn uaf() {
+/--- cell region
+|   let cell = Cell::new(&quot;Static str&quot;);
+|/-- s region
+||  let s = String::new(&quot;UAF&quot;);
+||
+||/- shortener 'cell region &amp; shortener 'a regions
+||| let cell2 = shortener(&amp;cell, &amp;s);
+||-
+||  drop(s);
+|-
+|   println!(&quot;{}&quot;, cell);
+-
+}
+</code></pre>
+<p>Now, as we don't use <code>cell2</code>, <code>shortener 'cell</code> and <code>shortener 'a</code> regions are both only one line long, and we can safely take references
+to both <code>cell</code> and <code>s</code> at this line. But internally the shortener function updates the cell pointing the internal reference to 
+the allocated on the heap string which is being dropped right before we're printing it out on the screen. That's a use after free
+bug and compiler is unable to prevent it because it analyzes functions independetly and can't see that the cell was updated
+inside <code>shortener</code>. That's why we need to disable the ability to shorten lifetimes for the <code>Cell</code> type. However, hardcoding
+types for which shortening rules don't apply is a bad solution. We have the same issue for all types with interior mutability and 
+programmers may define they own interior mutable types + there may be others kind of types vulnerable to this same issue. To control
+whether we allowed to shorten lifetimes or not there is a mechanism called lifetime variance.</p>
+<h2 id="variance-rules"><a class="header" href="#variance-rules">Variance rules</a></h2>
+<p>Variance rules are hardcoded in the compiler for the primitive types and are being inferred for the compound types.</p>
+<p>Threre are 3 of them:</p>
+<ul>
+<li>A type is covariant if <code>'a: 'b</code> implies <code>T&lt;'a&gt;: T&lt;'b&gt;</code>. This is what we've used in the previous chapter to cast <code>Iterator + 'post_urls</code> into <code>Iterator + 'blog_url</code>. 
+Covariance implies that the rules we've learnt work as we discussed and lifetime shortenings are allowed.</li>
+<li>A type is invariant if <code>'a: 'b</code> implies nothing. That's what we've seen in the example with the <code>Cell</code> type. Basically it's a mechanism to disable lifetime casts.</li>
+<li>A type is contravariant if <code>'a: 'b</code> implies <code>T&lt;'b&gt;: T&lt;'a&gt;</code>. This is a rule that allows to extend lifeime <code>'b</code> to lifetime <code>'a</code>. 
+It works only for the function arguments and it will be your homework to figure it out.</li>
+</ul>
+<p>In practice you'll usually deal with covariance and invariance.</p>
+<p>Here is a table from the Nomicon with the variance settings for different types.
+As a general rule: </p>
+<ul>
+<li>All const contexts are covariant</li>
+<li>All mutable/interiory mutable contexts are invariant</li>
+<li>Function arguments are contravariant</li>
+</ul>
+<table><thead><tr><th>Type</th><th>'a</th><th>T</th><th>U</th></tr></thead><tbody>
+<tr><td>&amp;'a T</td><td>covariant</td><td>covariant</td><td></td></tr>
+<tr><td>&amp;'a mut T</td><td>covariant</td><td>invariant</td><td></td></tr>
+<tr><td>Box<T></td><td>covariant</td><td></td><td></td></tr>
+<tr><td>Vec<T></td><td>covariant</td><td></td><td></td></tr>
+<tr><td>UnsafeCell<T></td><td>invariant</td><td></td><td></td></tr>
+<tr><td>Cell<T></td><td>invariant</td><td></td><td></td></tr>
+<tr><td>fn(T) -&gt; U</td><td>contravariant</td><td>covariant</td><td></td></tr>
+<tr><td>*const T</td><td>covariant</td><td></td><td></td></tr>
+<tr><td>*mut T</td><td>invariant</td><td></td><td></td></tr>
+</tbody></table>
+<p>It may be a bit confusing to see that variance is applied to a lifetime and some type T. 
+That's because <code>T</code> may be a reference itself(like <code>&amp;'s str</code>). Let's understand how this rules
+work with one more practical example:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct S&lt;'a, T&gt; {
+    val: &amp;'a T
+}
+
+fn shortener&lt;'a, 'b, 'c, 'd&gt;(s: S&lt;'a, &amp;'b str&gt;) -&gt; S&lt;'c, &amp;'d str&gt; 
+where
+    'a: 'c,
+    'b: 'd,
+{
+    s
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>We have a struct definiton corresponding to that row of the table</p>
+<table><thead><tr><th>Type</th><th>'a</th><th>T</th><th>U</th></tr></thead><tbody>
+<tr><td>&amp;'a T</td><td>covariant</td><td>covariant</td><td></td></tr>
+</tbody></table>
+<p>The tables shows that <code>&amp;'a T</code> is covariant over <code>'a</code>. That means that <code>'a: 'b</code> implies <code>'a ~&gt; 'b</code>.
+We show it in our shortener funciton by shortening <code>'a</code> to <code>'c</code>. Also, <code>&amp;'a T</code> is covariant over T.
+That means if <code>T</code> is a reference the lifetime of the reference is covariant. We show it in <code>shortener</code>
+by shortening <code>&amp;'b str</code> to <code>&amp;'d str</code>.</p>
+<p>Let's modify our example a bit</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct S&lt;'a, T&gt; {
+    val: &amp;'a mut T
+}
+
+fn shortener&lt;'a, 'b, 'c, 'd&gt;(s: S&lt;'a, &amp;'b str&gt;) -&gt; S&lt;'c, &amp;'d str&gt; 
+where
+    'a: 'c,
+    'b: 'd,
+{
+    s
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>Not type <code>S</code> corresponds to this row of the table</p>
+<table><thead><tr><th>Type</th><th>'a</th><th>T</th><th>U</th></tr></thead><tbody>
+<tr><td>&amp;'a mut T</td><td>covariant</td><td>invariant</td><td></td></tr>
+</tbody></table>
+<p><code>shortener</code> no longer compiles. <code>T</code> is invrariant meaning <code>'b: 'd</code> doesn't allow <code>'b ~&gt; 'd</code>. However <code>S</code> is still
+covariant over <code>'a</code>, so <code>'a: 'c</code> should work. And indeed, if we remove <code>'b ~&gt; 'd</code> cast from the signature it compiles:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct S&lt;'a, T&gt; {
+    val: &amp;'a mut T
+}
+
+fn shortener&lt;'a, 'b, 'c&gt;(s: S&lt;'a, &amp;'b str&gt;) -&gt; S&lt;'c, &amp;'b str&gt; 
+where
+    'a: 'c,
+{
+    s
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>This should be enough material to give you basic undestanding of lifetime variance. In general you want to prefer
+covariant contexts, because they're the most flexible ones. Invariant contexts usually lead to some hard 
+to grasp lifetime errors because references are tightly bounded to their regions and its very hard to move them into another regions.
+We'll see such errors and learn how to deal with them in another chapters. For now you need to get comfortable with the variance concept.</p>
+<h2 id="chapter-exercises"><a class="header" href="#chapter-exercises">Chapter exercises</a></h2>
+<p>The chapter is called <code>Introduction to variance</code> because it only gives you a reasoning why it's needed and a brief overview of how it works.
+There is already an awesome <a href="https://lifetime-variance.sunshowers.io">Practical variance tutorial</a> on the Internet.
+Complete it to master the variance concept.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                        
                             <a rel="prev" href="lifetime_subtyping.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
-                        
 
-                        
                             <a rel="next" href="implied_bounds.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
-                        
 
                         <div style="clear: both"></div>
                     </nav>
@@ -187,22 +432,17 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                
                     <a rel="prev" href="lifetime_subtyping.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
-                
 
-                
                     <a rel="next" href="implied_bounds.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
-                
             </nav>
 
         </div>
 
-        
         <!-- Livereload script (if served using the cli tool) -->
         <script type="text/javascript">
             var socket = new WebSocket("ws://localhost:3000/__livereload");
@@ -217,34 +457,24 @@
                 socket.close();
             }
         </script>
-        
 
-        
 
-        
 
-        
         <script type="text/javascript">
             window.playground_copyable = true;
         </script>
-        
 
-        
 
-        
         <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
         <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
         <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
-        
 
         <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
         <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
         <script src="book.js" type="text/javascript" charset="utf-8"></script>
 
         <!-- Custom JS scripts -->
-        
 
-        
 
     </body>
 </html>

@@ -4,37 +4,25 @@
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
         <title>Borrow checking</title>
-        
-        
 
 
         <!-- Custom HTML head -->
         
-
-
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff" />
 
-        
         <link rel="icon" href="favicon.svg">
-        
-        
         <link rel="shortcut icon" href="favicon.png">
-        
         <link rel="stylesheet" href="css/variables.css">
         <link rel="stylesheet" href="css/general.css">
         <link rel="stylesheet" href="css/chrome.css">
-        
         <link rel="stylesheet" href="css/print.css" media="print">
-        
 
         <!-- Fonts -->
         <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
-        
         <link rel="stylesheet" href="fonts/fonts.css">
-        
 
         <!-- Highlight.js Stylesheets -->
         <link rel="stylesheet" href="highlight.css">
@@ -42,9 +30,7 @@
         <link rel="stylesheet" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
-        
 
-        
     </head>
     <body>
         <!-- Provide site root to javascript -->
@@ -103,8 +89,7 @@
         <div id="page-wrapper" class="page-wrapper">
 
             <div class="page">
-                
-                <div id="menu-bar-hover-placeholder"></div>
+                                <div id="menu-bar-hover-placeholder"></div>
                 <div id="menu-bar" class="menu-bar sticky bordered">
                     <div class="left-buttons">
                         <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
@@ -120,29 +105,24 @@
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
-                        
                         <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
-                        
                     </div>
 
                     <h1 class="menu-title"></h1>
 
                     <div class="right-buttons">
-                        
                         <a href="print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
-                        
-                        
+
                     </div>
                 </div>
 
-                
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -150,7 +130,6 @@
                         </ul>
                     </div>
                 </div>
-                
 
                 <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
                 <script type="text/javascript">
@@ -582,7 +561,7 @@ and the one for <code>blog_url</code>, so regions in <code>main</code> would loo
 <p>This way <code>post_urls_from_blog 'blog_url</code> region is only 1-line long and borrowing <code>blog_url</code> for this line is fine, when <code>post_urls_from_blog 'post_urls</code> region
 holds only <code>post_urls</code> references and doesn't care about the <code>blog_url</code> region at all. Let's try to split this <code>'a</code> region!</p>
 <h2 id="splitting-post_urls_from_blog-a-region"><a class="header" href="#splitting-post_urls_from_blog-a-region">Splitting <code>post_urls_from_blog 'a</code> region</a></h2>
-<p>To ask the compiler to infer 2 regions instead of 1 we just need to introduce a second lifetime parameter to the function signature:</p>
+<p>To ask the compiler to infer 2 regions instead of 1 we just need to introduce a second lifetime parameter in the function signature:</p>
 <pre><code class="language-rust noplayground">fn post_urls_from_blog&lt;'post_urls, 'blog_url&gt;(
     items: &amp;'post_urls [DiscoveredItem], 
     blog_url: &amp;'blog_url str,
@@ -592,7 +571,7 @@ holds only <code>post_urls</code> references and doesn't care about the <code>bl
 </code></pre>
 <p>We're taking post urls from input items, so <code>items</code> clearly belong to <code>post_urls</code> region. We use <code>blog_url</code> only for filtering, so it belongs to its own 
 <code>blog_url</code> region. Iterator returns post urls from the input <code>items</code>, so <code>Item = &amp;str</code> must belong to <code>post_urls</code> region. But what about an <code>Iterator</code> itself?
-We're iterating items, so let's assign it to <code>post_urls</code> region.</p>
+We're iterating <code>items</code>, so let's assign it to <code>post_urls</code> region.</p>
 <pre><code class="language-rust noplayground">fn post_urls_from_blog&lt;'post_urls, 'blog_url&gt;(
     items: &amp;'post_urls [DiscoveredItem], 
     blog_url: &amp;'blog_url str,
@@ -600,7 +579,8 @@ We're iterating items, so let's assign it to <code>post_urls</code> region.</p>
     // ...
 }
 </code></pre>
-<p>And now I want to go through one more example to emphasize that borrow checker analyzes each function completely independetly:</p>
+<p>Now we will infer new regions for the updated signature, but in a bit different context to
+emphasize that borrow checker analyzes each function completely independetly:</p>
 <pre><code class="language-rust noplayground">fn uaf(options: &amp;CrawlerOptions) {
     let items = crawler::run(options);
 
@@ -613,7 +593,7 @@ We're iterating items, so let's assign it to <code>post_urls</code> region.</p>
     }
 }
 </code></pre>
-<p>Let's infer regions for this function:</p>
+<p>Let's infer regions in the <code>uaf</code> function:</p>
 <pre><code class="language-rust noplayground">fn uaf(options: &amp;CrawlerOptions) {
 /---items region
 |   let items = crawler::run(options);
@@ -688,7 +668,7 @@ error: could not compile `playground` due to previous error
 </code></pre>
 <p>It was able to spot that the iterator borrows <code>blog_url</code> from the <code>'blog_url</code> region, but the signature
 suggests that the iterator borrows only from the <code>'post_urls</code> region, so the borrow checker threw a <code>lifetime mismatch</code> error.
-So we must reflect this <code>blog_url</code> borrow in our signature by assigning the iterator to the <code>'blog_url</code> region.</p>
+In order to fix it we must reflect this <code>blog_url</code> borrow in our signature by assigning the iterator to the <code>'blog_url</code> region.</p>
 <pre><pre class="playground"><code class="language-rust">
 <span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -724,7 +704,7 @@ error[E0623]: lifetime mismatch
 For more information about this error, try `rustc --explain E0623`.
 error: could not compile `playground` due to previous error
 </code></pre>
-<p>Compilation fails with the same error. However, the signature is fine and communicates what we want now. Hmm... It's time to resort to magic!</p>
+<p>But compilation fails with the same error. However, the signature is fine and communicates what we want now. Hmm... It's time to resort to magic!</p>
 <pre><pre class="playground"><code class="language-rust">
 <span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -842,17 +822,13 @@ Does <code>uaf</code> compile?</p>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                        
                             <a rel="prev" href="basics.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
-                        
 
-                        
                             <a rel="next" href="lifetime_subtyping.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
-                        
 
                         <div style="clear: both"></div>
                     </nav>
@@ -860,22 +836,17 @@ Does <code>uaf</code> compile?</p>
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                
                     <a rel="prev" href="basics.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
-                
 
-                
                     <a rel="next" href="lifetime_subtyping.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
-                
             </nav>
 
         </div>
 
-        
         <!-- Livereload script (if served using the cli tool) -->
         <script type="text/javascript">
             var socket = new WebSocket("ws://localhost:3000/__livereload");
@@ -890,34 +861,24 @@ Does <code>uaf</code> compile?</p>
                 socket.close();
             }
         </script>
-        
 
-        
 
-        
 
-        
         <script type="text/javascript">
             window.playground_copyable = true;
         </script>
-        
 
-        
 
-        
         <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
         <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
         <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
-        
 
         <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
         <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
         <script src="book.js" type="text/javascript" charset="utf-8"></script>
 
         <!-- Custom JS scripts -->
-        
 
-        
 
     </body>
 </html>

@@ -24,10 +24,10 @@ ref_a = ref_b // not fine, requires 'b: 'a
 We're given `'a: 'b` and we have 2 references: `ref_a` belonging to the region `'a` and `ref_b` belonging to the region `'b`.
 `'a: 'b` implies `'a ~> 'b` allowing us to assign `ref_b` to `ref_a`. By doing that we're sort of moving a reference from a longer `'a` 
 region into a shorter `'b` region and this allows us to do some stuff with it on a behalf of the `'b` region. However, assigning `ref_a` to `ref_b` 
-results in a compile error. It requires a `'b: 'a` precondition to cast `'b` ref into `'a` ref, but we only have a `'a: 'b` precondition.
+results in a compile error. It requires a `'b: 'a` relationship to cast `'b` ref into `'a` ref, but we only have a `'a: 'b` relationship.
 
 In the previous chapter we used a visual approach to show how the borrow checker infers regions. In reality it doesn't work like that. All it does
-is it assumes a new region for every line of code, and then it infers `outlives` relationships for these regions, and then executes validations based
+is it assumes a new region for every line of code, infers `outlives` relationships for those regions, and then executes validations based
 on this information. When the borrow checker encounters a function call it doesn't try to be smart and infer anything, it just reads regions
 and relationships between them directly from the function signature and assigns references to those regions. 
 That means when we're annotating our signatures with lifetimes we're doing the great part of the borrow checker's work manually. To get a brief
@@ -157,23 +157,23 @@ fn post_urls_from_blog<'post_urls, 'blog_url>(
 ```
 
 Let's examine what happens in between of the `iter()` and `filter_map()` calls. `iter()` returns an 
-`Iterator` from `items` and this iterator is bounded by `'post_urls` lifetime. `filter_map()` takes the `items`
-iterator, but also captures the `blog_url` with `'blog_url` lifetime in the closure, and we expect the resulting iterator to be bounded by
-'`blog_url` lifetime. We can represent what's happening with the following function:
+`Iterator` from `items` and this iterator belongs to `'post_urls` region. `filter_map()` takes the `items`
+iterator, but also captures the `blog_url` from the `'blog_url` region in the closure, and we expect the resulting iterator to belong to the
+'`blog_url` region. We can represent what's happening with the following function:
 
 ```rust
 fn dot<'post_urls, 'blog_url>(
-    iter: impl Iterator<Item = ()> + 'post_urls,
+    input: impl Iterator<Item = ()> + 'post_urls,
 ) -> impl Iterator<Item = ()> + 'blog_url
 {
-    iter
+    input
 }
 ```
 
 The function doesn't compile. The cast from `Iterator + 'post_urls` into `Iterator + 'blog_url` is prohibited because
 `'post_urls` and `'blog_url` lifetimes are unrelated. In order to make the cast possible we need to introduce a relationship
-between the lifetimes. We want to cast(shorten) `'post_urls` into `'blog_url` therefore we need a `'post_urls: 'blog_url`
-relationship. Let's type it out. 
+between the regions. We want to be able to cast(shorten) `'post_urls` references into `'blog_url` references 
+therefore we need a `'post_urls: 'blog_url` relationship. Let's type it out. 
 
 ```rust
 fn dot<'post_urls, 'blog_url>(
@@ -189,7 +189,8 @@ where
 Now, with this additional bit of information the funciton does compile. The relationships between lifetimes
 aren't inferred between the function calls, we need to specify them manually in order to apply casts we want
 in the function body. Adding `where 'post_urls: 'blog_url` to `post_urls_from_blog` makes `items.iter()` cast
-into `Iterator + 'blog_url` cast valid and the function now compiles for the same reason.
+into `Iterator + 'blog_url` valid. Adding this `where` clause to our `post_urls_from_blog` function 
+makes it compile for the same reason.
 
 ```rust
 #struct DiscoveredItem {
@@ -239,8 +240,9 @@ where
 }
 ```
 
-Now instead of casting `items.iter()` we're casting the borrow of the `blog_url` in the `filter_map` closure `'blog_url ~> 'post_urls`, so the
-resulting iterator appears to be `Iterator + 'post_urls` as shown in the updated function signature and this signature compiles too.
+Now instead of casting `items.iter()` which belongs to `'post_urls` we're casting the borrow of 
+the `blog_url` in the `filter_map` closure `'blog_url ~> 'post_urls`, so the resulting iterator appears 
+to be `Iterator + 'post_urls` as shown in the updated function signature and this signature compiles too.
 What's the difference? To understand why this is not what we want we need to remember the second implication of `'a: 'b` relationship:
 
 - The compiler must assert that `'a >= 'b` (region `'a` is the same or wider than region `'b`)
@@ -287,7 +289,7 @@ region or wider, so we need to extend `post_urls_from_blog 'blog_url` region to 
 As the result `post_urls_from_blog 'blog_url` and `blog_url` regions are not aligned and we have a conflict and the same compiler
 error we were struggling with from the beginning. We know that the region for the iterator must be shorter because, usually, iterators
 live less then the items they yield, but we failed to communicate this to compiler and our signature requires the region for the `Iterator` 
-to be as wide or wider then the region for its items which is wrong, so we must stick with the `'post_urls: 'blog_url` relationship.
+to be as wide or wider than the region for its items which is wrong, so we must stick with the `'post_urls: 'blog_url` relationship.
 The regions for it will look as we want:
 
 ```rust,noplayground
@@ -308,10 +310,12 @@ The regions for it will look as we want:
 
 `post_urls_from_blog 'post_urls > post_urls_from_blog 'blog_url`, so no extra region expansion is required and everything compiles just fine.
 
-Hope, this example was sufficient to show that lifetimes subtyping isn't a rocket science and is very straighforward to work with. The important
+Hope, this example was sufficient to show that lifetime subtyping is very straighforward to work with. The important
 thing to remember is when you define a signature you manually specify how many regions the compiler needs to infer and 
-what relationships are between them. The relationships come from the "casts" you want to perform in your function body, and specifying them
-results in possible extra region expansions on the caller site. However, to have a full picture, we also need to learn about the lifetime variance.
+what relationships are between them. The relationships come from the "lifetime casts" you want to perform in your function body, and specifying them
+results in possible extra region expansions on the caller site, so you need to think ahead which regions 
+can be shorter than others. If regions should be the same replace them with a single region.
+However, there is one more important thing to consider. To fully grasp lifetime mechanics we need to learn about lifetime variance.
 
 ## Chapter exercises
 

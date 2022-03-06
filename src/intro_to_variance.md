@@ -191,7 +191,7 @@ Here is a table from the Nomicon with the variance settings for different types.
 As a general rule: 
 - All const contexts are covariant
 - All mutable/interiory mutable contexts are invariant
-- Function arguments are contravariant
+- Function pointer arguments are contravariant
 
 Type          | 'a            | T         | U
 --------------|---------------|-----------|----------

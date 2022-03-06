@@ -327,7 +327,7 @@ As a general rule: </p>
 <ul>
 <li>All const contexts are covariant</li>
 <li>All mutable/interiory mutable contexts are invariant</li>
-<li>Function arguments are contravariant</li>
+<li>Function pointer arguments are contravariant</li>
 </ul>
 <table><thead><tr><th>Type</th><th>'a</th><th>T</th><th>U</th></tr></thead><tbody>
 <tr><td>&amp;'a T</td><td>covariant</td><td>covariant</td><td></td></tr>
@@ -443,6 +443,20 @@ on the Internet. Complete it to master the variance concept.</p>
 
         </div>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script type="text/javascript">
+            var socket = new WebSocket("ws://localhost:3000/__livereload");
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
 

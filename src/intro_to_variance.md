@@ -90,7 +90,7 @@ fn shortener<'cell, 'a>(cell: &'cell Cell<&'static str>, s: &'a str) -> &'cell C
 }
 ```
 
-Let's infer the regions in this function:
+Let's infer the regions inside this `uaf` function:
 
 ```rust 
 fn uaf() {
@@ -121,7 +121,7 @@ fn uaf() {
 }
 ```
 
-The `'cell` holds a reference to `cell` and a `cell2` output reference. `&cell` is a regular input reference without additional bounds, 
+The `shortener 'cell` holds a reference to `cell` and a `cell2` output reference. `&cell` is a regular input reference without additional bounds, 
 so the region for it is one line long, however `cell2` is used in the print statement, so the region was expanded to be 3 lines long.
 `cell region` outlives the `shortener 'cell` region, so we can take a reference and dereference it at any line within the `'shortener cell`
 region, there are no errors at this point.
@@ -141,7 +141,7 @@ fn uaf() {
 }
 ```
 The `shortener 'a` region holds a reference to `s` and an internal reference inside the `cell2`(we can think it holds cell2 itself for simplicity). `&s` is a regular
-input reference, so `'a` with respect of `&s` is only one line long, however `cell2` is used in the print statement which makes `shortener 'a` region 3 lines
+input reference, so `shortener 'a` with respect of `&s` is only one line long, however `cell2` is used in the print statement which makes `shortener 'a` region 3 lines
 long. But we can't dereference `&s` at the line with `println!` because the `s` region ends right before the `println!` statement.
 There is an error and compiler successfully caught a use after free bug. However, `cell` is still in scope, so instead of using `cell2` we could have used `cell`
 in the print statement:
@@ -164,12 +164,12 @@ fn uaf() {
 ```
 
 Now, as we don't use `cell2`, `shortener 'cell` and `shortener 'a` regions are both only one line long, and we can safely take references
-to both `cell` and `s` at this line. But internally the shortener function updates the cell pointing the internal reference to 
+to both `cell` and `s` at this line. But `shortener` updates the cell pointing the internal reference to 
 the allocated on the heap string which is being dropped right before we're printing it out on the screen. That's a use after free
 bug and compiler is unable to prevent it because it analyzes functions independetly and can't see that the cell was updated
 inside `shortener`. That's why we need to disable the ability to shorten lifetimes for the `Cell` type. However, hardcoding
 types for which shortening rules don't apply is a bad solution. We have the same issue for all types with interior mutability and 
-programmers may define they own interior mutable types + there may be others kind of types vulnerable to this same issue. To control
+programmers may define they own interiory mutable types + there may be others kind of types vulnerable to this same issue. To control
 whether we allowed to shorten lifetimes or not there is a mechanism called lifetime variance.
 
 
@@ -180,7 +180,7 @@ Variance rules are hardcoded in the compiler for the primitive types and are bei
 Threre are 3 of them:
 
 - A type is covariant if `'a: 'b` implies `T<'a>: T<'b>`. This is what we've used in the previous chapter to cast `Iterator + 'post_urls` into `Iterator + 'blog_url`. 
-Covariance implies that the rules we've learnt work as we discussed and lifetime shortenings are allowed.
+Covariance implies that the rules we've learnt before work and lifetime shortenings are allowed.
 - A type is invariant if `'a: 'b` implies nothing. That's what we've seen in the example with the `Cell` type. Basically it's a mechanism to disable lifetime casts.
 - A type is contravariant if `'a: 'b` implies `T<'b>: T<'a>`. This is a rule that allows to extend lifeime `'b` to lifetime `'a`. 
 It works only for the function arguments and it will be your homework to figure it out.
@@ -207,7 +207,7 @@ fn(T) -> U    | contravariant | covariant |
 
 It may be a bit confusing to see that variance is applied to a lifetime and some type T. 
 That's because `T` may be a reference itself(like `&'s str`). Let's understand how this rules
-work with one more practical example:
+work with one more example:
 
 ```rust 
 struct S<'a, T> {
@@ -229,9 +229,9 @@ Type          | 'a            | T         | U
 --------------|---------------|-----------|----------
 &'a T         | covariant     | covariant |
 
-The tables shows that `&'a T` is covariant over `'a`. That means that `'a: 'b` implies `'a ~> 'b`.
-We show it in our shortener funciton by shortening `'a` to `'c`. Also, `&'a T` is covariant over T.
-That means if `T` is a reference the lifetime of the reference is covariant. We show it in `shortener`
+The table shows that `&'a T` is covariant over `'a`. That means that `'a: 'b` implies `'a ~> 'b`.
+We show it in our `shortener` funciton by shortening `'a` to `'c`. Also, `&'a T` is covariant over `T`.
+That means if `T` is a reference the lifetime of the reference is covariant. We show that in `shortener`
 by shortening `&'b str` to `&'d str`.
 
 
@@ -280,6 +280,6 @@ We'll see such errors and learn how to deal with them in another chapters. For n
 
 ## Chapter exercises
 
-The chapter is called `Introduction to variance` because it only gives you a reasoning why it's needed and a brief overview of how it works.
-There is already an awesome [Practical variance tutorial](https://lifetime-variance.sunshowers.io) on the Internet.
-Complete it to master the variance concept.
+The chapter is called `Introduction to variance` because it only gives you a reasoning why this mechanism is needed
+and a brief overview of how it works. There is already an awesome [Practical variance tutorial](https://lifetime-variance.sunshowers.io) 
+on the Internet. Complete it to master the variance concept.

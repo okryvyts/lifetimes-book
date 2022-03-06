@@ -1,7 +1,6 @@
 
 # Русский военный корабль, иди нахуй 🇺🇦
 
-![Russians, go fuck yourself](https://live.staticflickr.com/65535/51903775407_60fccaf5b4_z.jpg) 
 # Introduction
 
 Lifetimes are Rust's most distinctive feature. They are what makes the language so valuable in the systems programming domain.

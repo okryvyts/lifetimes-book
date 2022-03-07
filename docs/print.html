@@ -396,7 +396,7 @@ Like from line X to line Y. The single line with the function invocation above i
 All regions are function scoped. There are no &quot;cross-function&quot; regions. When we encounter
 a function call in a function we currently analyze we just calculate a region for it
 in the calling function based on the callee signature.</p>
-<p>Now when we posses this secret knowledge we can formulate our task more precisely:
+<p>Now when we possess this secret knowledge we can formulate our task more precisely:
 <em>At the function invocation point we need to infer some minimal regions of code that will &quot;hold&quot; our references 
 with the guarantee that these references are safe to use at any line within the region they belong to.</em></p>
 <h2 id="inferring-regions"><a class="header" href="#inferring-regions">Inferring regions</a></h2>
@@ -1360,7 +1360,7 @@ where
 <pre><pre class="playground"><code class="language-rust">
 <span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>struct S&lt;T: ?Sized&gt;(RustT);
+</span>struct S&lt;T: ?Sized&gt;(T);
 <span class="boring">}
 </span></code></pre></pre>
 <p>Let's define a function with a lifetime cast:</p>
@@ -1522,7 +1522,7 @@ the allocated on the heap string which is being dropped right before we're print
 bug and compiler is unable to prevent it because it analyzes functions independetly and can't see that the cell was updated
 inside <code>shortener</code>. That's why we need to disable the ability to shorten lifetimes for the <code>Cell</code> type. However, hardcoding
 types for which shortening rules don't apply is a bad solution. We have the same issue for all types with interior mutability and 
-programmers may define they own interiory mutable types + there may be others kind of types vulnerable to this same issue. To control
+programmers may define they own interiory mutable types + there may be other kinds of types vulnerable to this same issue. To control
 whether we allowed to shorten lifetimes or not there is a mechanism called lifetime variance.</p>
 <h2 id="variance-rules"><a class="header" href="#variance-rules">Variance rules</a></h2>
 <p>Variance rules are hardcoded in the compiler for the primitive types and are being inferred for the compound types.</p>
@@ -1645,20 +1645,6 @@ on the Internet. Complete it to master the variance concept.</p>
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script type="text/javascript">
-            var socket = new WebSocket("ws://localhost:3000/__livereload");
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 

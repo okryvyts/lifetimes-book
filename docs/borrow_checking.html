@@ -188,7 +188,7 @@ Like from line X to line Y. The single line with the function invocation above i
 All regions are function scoped. There are no &quot;cross-function&quot; regions. When we encounter
 a function call in a function we currently analyze we just calculate a region for it
 in the calling function based on the callee signature.</p>
-<p>Now when we posses this secret knowledge we can formulate our task more precisely:
+<p>Now when we possess this secret knowledge we can formulate our task more precisely:
 <em>At the function invocation point we need to infer some minimal regions of code that will &quot;hold&quot; our references 
 with the guarantee that these references are safe to use at any line within the region they belong to.</em></p>
 <h2 id="inferring-regions"><a class="header" href="#inferring-regions">Inferring regions</a></h2>
@@ -847,20 +847,6 @@ Does <code>uaf</code> compile?</p>
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script type="text/javascript">
-            var socket = new WebSocket("ws://localhost:3000/__livereload");
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 

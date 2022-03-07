@@ -183,7 +183,7 @@ Threre are 3 of them:
 Covariance implies that the rules we've learnt before work and lifetime shortenings are allowed.
 - A type is invariant if `'a: 'b` implies nothing. That's what we've seen in the example with the `Cell` type. Basically it's a mechanism to disable lifetime casts.
 - A type is contravariant if `'a: 'b` implies `T<'b>: T<'a>`. This is a rule that allows to extend lifeime `'b` to lifetime `'a`. 
-It works only for the function arguments and it will be your homework to figure it out.
+It works only for the function pointer arguments and it will be your homework to figure it out.
 
 In practice you'll usually deal with covariance and invariance.
 
@@ -193,17 +193,17 @@ As a general rule:
 - All mutable/interiory mutable contexts are invariant
 - Function pointer arguments are contravariant
 
-Type          | 'a            | T         | U
---------------|---------------|-----------|----------
-&'a T         | covariant     | covariant |
-&'a mut T     | covariant     | invariant |
-Box<T>        | covariant     |           |
-Vec<T>        | covariant     |           |
-UnsafeCell<T> | invariant     |           |
-Cell<T>       | invariant     |           |
-fn(T) -> U    | contravariant | covariant |
-*const T      | covariant     |           |
-*mut T        | invariant     |           |
+Type            | 'a          | T               | U
+--------------- | ----------- | --------------- | ------------
+`&'a T`         | covariant   | covariant       |
+`&'a mut T`     | covariant   | invariant       |
+`Box<T>`        |             | covariant       |
+`Vec<T>`        |             | covariant       |
+`UnsafeCell<T>` |             | invariant       |
+`Cell<T>`       |             | invariant       |
+`fn(T) -> U`    |             | contravariant   | covariant
+`*const T`      |             | covariant       |
+`*mut T`        |             | invariant       |
 
 It may be a bit confusing to see that variance is applied to a lifetime and some type T. 
 That's because `T` may be a reference itself(like `&'s str`). Let's understand how this rules
@@ -225,9 +225,9 @@ where
 
 We have a struct definiton corresponding to that row of the table
 
-Type          | 'a            | T         | U
---------------|---------------|-----------|----------
-&'a T         | covariant     | covariant |
+Type           | 'a              | T           | U
+-------------- | --------------- | ----------- | ----------
+`&'a T`        | covariant       | covariant   |
 
 The table shows that `&'a T` is covariant over `'a`. That means that `'a: 'b` implies `'a ~> 'b`.
 We show it in our `shortener` funciton by shortening `'a` to `'c`. Also, `&'a T` is covariant over `T`.
@@ -252,9 +252,9 @@ where
 ```
 Not type `S` corresponds to this row of the table
 
-Type          | 'a            | T         | U
---------------|---------------|-----------|----------
-&'a mut T     | covariant     | invariant |
+Type           | 'a              | T           | U
+-------------- | --------------- | ----------- | ----------
+`&'a mut T`    | covariant       | invariant   |
 
 `shortener` no longer compiles. `T` is invrariant meaning `'b: 'd` doesn't allow `'b ~> 'd`. However `S` is still
 covariant over `'a`, so `'a: 'c` should work. And indeed, if we remove `'b ~> 'd` cast from the signature it compiles:

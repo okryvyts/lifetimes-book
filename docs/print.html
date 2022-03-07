@@ -1532,7 +1532,7 @@ whether we allowed to shorten lifetimes or not there is a mechanism called lifet
 Covariance implies that the rules we've learnt before work and lifetime shortenings are allowed.</li>
 <li>A type is invariant if <code>'a: 'b</code> implies nothing. That's what we've seen in the example with the <code>Cell</code> type. Basically it's a mechanism to disable lifetime casts.</li>
 <li>A type is contravariant if <code>'a: 'b</code> implies <code>T&lt;'b&gt;: T&lt;'a&gt;</code>. This is a rule that allows to extend lifeime <code>'b</code> to lifetime <code>'a</code>. 
-It works only for the function arguments and it will be your homework to figure it out.</li>
+It works only for the function pointer arguments and it will be your homework to figure it out.</li>
 </ul>
 <p>In practice you'll usually deal with covariance and invariance.</p>
 <p>Here is a table from the Nomicon with the variance settings for different types.
@@ -1543,15 +1543,15 @@ As a general rule: </p>
 <li>Function pointer arguments are contravariant</li>
 </ul>
 <table><thead><tr><th>Type</th><th>'a</th><th>T</th><th>U</th></tr></thead><tbody>
-<tr><td>&amp;'a T</td><td>covariant</td><td>covariant</td><td></td></tr>
-<tr><td>&amp;'a mut T</td><td>covariant</td><td>invariant</td><td></td></tr>
-<tr><td>Box<T></td><td>covariant</td><td></td><td></td></tr>
-<tr><td>Vec<T></td><td>covariant</td><td></td><td></td></tr>
-<tr><td>UnsafeCell<T></td><td>invariant</td><td></td><td></td></tr>
-<tr><td>Cell<T></td><td>invariant</td><td></td><td></td></tr>
-<tr><td>fn(T) -&gt; U</td><td>contravariant</td><td>covariant</td><td></td></tr>
-<tr><td>*const T</td><td>covariant</td><td></td><td></td></tr>
-<tr><td>*mut T</td><td>invariant</td><td></td><td></td></tr>
+<tr><td><code>&amp;'a T</code></td><td>covariant</td><td>covariant</td><td></td></tr>
+<tr><td><code>&amp;'a mut T</code></td><td>covariant</td><td>invariant</td><td></td></tr>
+<tr><td><code>Box&lt;T&gt;</code></td><td></td><td>covariant</td><td></td></tr>
+<tr><td><code>Vec&lt;T&gt;</code></td><td></td><td>covariant</td><td></td></tr>
+<tr><td><code>UnsafeCell&lt;T&gt;</code></td><td></td><td>invariant</td><td></td></tr>
+<tr><td><code>Cell&lt;T&gt;</code></td><td></td><td>invariant</td><td></td></tr>
+<tr><td><code>fn(T) -&gt; U</code></td><td></td><td>contravariant</td><td>covariant</td></tr>
+<tr><td><code>*const T</code></td><td></td><td>covariant</td><td></td></tr>
+<tr><td><code>*mut T</code></td><td></td><td>invariant</td><td></td></tr>
 </tbody></table>
 <p>It may be a bit confusing to see that variance is applied to a lifetime and some type T. 
 That's because <code>T</code> may be a reference itself(like <code>&amp;'s str</code>). Let's understand how this rules
@@ -1574,7 +1574,7 @@ where
 </span></code></pre></pre>
 <p>We have a struct definiton corresponding to that row of the table</p>
 <table><thead><tr><th>Type</th><th>'a</th><th>T</th><th>U</th></tr></thead><tbody>
-<tr><td>&amp;'a T</td><td>covariant</td><td>covariant</td><td></td></tr>
+<tr><td><code>&amp;'a T</code></td><td>covariant</td><td>covariant</td><td></td></tr>
 </tbody></table>
 <p>The table shows that <code>&amp;'a T</code> is covariant over <code>'a</code>. That means that <code>'a: 'b</code> implies <code>'a ~&gt; 'b</code>.
 We show it in our <code>shortener</code> funciton by shortening <code>'a</code> to <code>'c</code>. Also, <code>&amp;'a T</code> is covariant over <code>T</code>.
@@ -1599,7 +1599,7 @@ where
 </span></code></pre></pre>
 <p>Not type <code>S</code> corresponds to this row of the table</p>
 <table><thead><tr><th>Type</th><th>'a</th><th>T</th><th>U</th></tr></thead><tbody>
-<tr><td>&amp;'a mut T</td><td>covariant</td><td>invariant</td><td></td></tr>
+<tr><td><code>&amp;'a mut T</code></td><td>covariant</td><td>invariant</td><td></td></tr>
 </tbody></table>
 <p><code>shortener</code> no longer compiles. <code>T</code> is invrariant meaning <code>'b: 'd</code> doesn't allow <code>'b ~&gt; 'd</code>. However <code>S</code> is still
 covariant over <code>'a</code>, so <code>'a: 'c</code> should work. And indeed, if we remove <code>'b ~&gt; 'd</code> cast from the signature it compiles:</p>
@@ -1645,6 +1645,20 @@ on the Internet. Complete it to master the variance concept.</p>
 
         </div>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script type="text/javascript">
+            var socket = new WebSocket("ws://localhost:3000/__livereload");
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
 

@@ -3,7 +3,7 @@
 Suppose we have the following generic structure:
 
 ```rust
-struct S<T: ?Sized>(RustT);
+struct S<T: ?Sized>(T);
 ```
 
 Let's define a function with a lifetime cast:
@@ -169,7 +169,7 @@ the allocated on the heap string which is being dropped right before we're print
 bug and compiler is unable to prevent it because it analyzes functions independetly and can't see that the cell was updated
 inside `shortener`. That's why we need to disable the ability to shorten lifetimes for the `Cell` type. However, hardcoding
 types for which shortening rules don't apply is a bad solution. We have the same issue for all types with interior mutability and 
-programmers may define they own interiory mutable types + there may be others kind of types vulnerable to this same issue. To control
+programmers may define they own interiory mutable types + there may be other kinds of types vulnerable to this same issue. To control
 whether we allowed to shorten lifetimes or not there is a mechanism called lifetime variance.
 
 

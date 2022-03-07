@@ -56,7 +56,7 @@ All regions are function scoped. There are no "cross-function" regions. When we 
 a function call in a function we currently analyze we just calculate a region for it
 in the calling function based on the callee signature.
 
-Now when we posses this secret knowledge we can formulate our task more precisely:
+Now when we possess this secret knowledge we can formulate our task more precisely:
 _At the function invocation point we need to infer some minimal regions of code that will "hold" our references 
 with the guarantee that these references are safe to use at any line within the region they belong to._
 

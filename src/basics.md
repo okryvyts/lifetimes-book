@@ -1,8 +1,8 @@
 # Basics
 
-_Disclaimer: It's recommended to follow the example by retyping it in your favorite editor_
+_It's recommended to follow the example by retyping it in your favorite editor_
 
-Imagine we're writing a web crawler. We're collecting posts from different blogs.
+Imagine we're writing a web crawler that collects posts from different blogs.
 The crawler's output looks like that:
 
 ```rust
@@ -23,7 +23,7 @@ struct DiscoveredItem {
 }
 
 fn post_urls_from_blog(
-    items: &[DiscoveredItem], 
+    items: &[DiscoveredItem],
     blog_url: &str,
 ) -> impl Iterator<Item = &str> {
     // Creating an iterator from the &[DiscoveredItem] slice
@@ -39,13 +39,13 @@ fn post_urls_from_blog(
 }
 ```
 
-Our function doesn't compile. Compiler complains it needs some lifetime annotations. 
+Our function doesn't compile, the compiler complains it needs some lifetime annotations.
 
 ```
 error[E0106]: missing lifetime specifier
   --> src/main.rs:12:27
    |
-10 |     items: &[DiscoveredItem], 
+10 |     items: &[DiscoveredItem],
    |            -----------------
 11 |     blog_url: &str,
    |               ----
@@ -56,7 +56,7 @@ error[E0106]: missing lifetime specifier
 help: consider introducing a named lifetime parameter
    |
 9  ~ fn post_urls_from_blog<'a>(
-10 ~     items: &'a [DiscoveredItem], 
+10 ~     items: &'a [DiscoveredItem],
 11 ~     blog_url: &'a str,
 12 ~ ) -> impl Iterator<Item = &'a str> {
    |
@@ -71,7 +71,7 @@ If we read the error carefully we can even find a suggestion how to fix our sign
 help: consider introducing a named lifetime parameter
    |
 9  ~ fn post_urls_from_blog<'a>(
-10 ~     items: &'a [DiscoveredItem], 
+10 ~     items: &'a [DiscoveredItem],
 11 ~     blog_url: &'a str,
 12 ~ ) -> impl Iterator<Item = &'a str> {
    |
@@ -86,7 +86,7 @@ struct DiscoveredItem {
 }
 
 fn post_urls_from_blog<'a>(
-    items: &'a [DiscoveredItem], 
+    items: &'a [DiscoveredItem],
     blog_url: &'a str,
 ) -> impl Iterator<Item = &'a str> {
     // Creating an iterator from the &[DiscoveredItem] slice
@@ -102,9 +102,9 @@ fn post_urls_from_blog<'a>(
 }
 ```
 
-Cool, now everything compiles. Looks like we have easily won this fight with the borrow checker... No, we haven't.
-The compiler actually caught us. It provided a suggestion which is semantically incorrect and which made 
-our function over restrictive. That means the borrow checker will strike back soon and will make us scream out of pain. 
+Cool, now everything compiles. So that's it, we've won our fight with the borrow checker... right? Well, not quite.
+The compiler actually tricked us. It provided a suggestion which is semantically incorrect and which made
+our function over restrictive. That means the borrow checker will strike back soon and will make us scream out of pain.
 Take a deep breath because in a moment...
 
 ## Compiler strikes back
@@ -119,7 +119,7 @@ Let's try to use our function in some non-trivial context.
 #}
 #
 #fn post_urls_from_blog<'a>(
-#    items: &'a [DiscoveredItem], 
+#    items: &'a [DiscoveredItem],
 #    blog_url: &'a str,
 #) -> impl Iterator<Item = &'a str> {
 #    // Creating an iterator from the &[DiscoveredItem] slice
@@ -151,7 +151,7 @@ fn main() {
     ];
 
     // Reading the blog URL we're interested in from somewhere
-    let blog_url = get_blog_url(); 
+    let blog_url = get_blog_url();
 
     // Collecting post URLs from this blog using our function
     let post_urls: Vec<_> = post_urls_from_blog(crawler_results, &blog_url).collect();
@@ -169,7 +169,7 @@ fn main() {
 
 // Returns a predefined value
 fn get_blog_url() -> String {
-    "https://blogs.com/".to_owned()    
+    "https://blogs.com/".to_owned()
 }
 
 // Just prints URL out
@@ -181,7 +181,7 @@ fn process_post(url: &str) {
 fn calculate_blog_stats(_blog_url: String) {}
 ```
 
-This code doesn't compile. What's worse is the compiler error that just absurd:
+This code doesn't compile. What's worse is that the compiler error is just absurd:
 
 ```
    Compiling playground v0.0.1 (/playground)
@@ -205,7 +205,7 @@ error: could not compile `playground` due to previous error
 
 How on earth `blog_url` that was taken from some kind of a user input is
 related to `post_urls` returned by the crawler?
-The most annoying thing is the code in the `main` function is actually perfectly fine and should compile, 
-but as you may have already guessed it doesn't because of our malformed function signature. 
-What's going on here and what's the error communicating to us? 
-To answer these questions we need to understand the way the borrow checker works.
+The most annoying thing is that the code in the `main` function is actually perfectly fine and should compile,
+but as you may have already guessed it doesn't because of our malformed function signature.
+What's going on here? And what's the error communicating to us?
+To answer these questions, we need to understand the way the borrow checker works.

@@ -224,7 +224,7 @@ error: could not compile `playground` due to previous error
 }
 <span class="boring">}
 </span></code></pre></pre>
-<p>So it looks like <code>Cell</code> is somewhat exceptional and <code>'a: 'b</code> doesn't work for it for some reason. Let's 
+<p>So it looks like <code>Cell</code> is somewhat exceptional and <code>'a: 'b</code> doesn't work for it for some reason. Let's
 figure out why we want to have exceptions from the rules we've learnt in the first place.</p>
 <p>Assume the following function compiles</p>
 <pre><pre class="playground"><code class="language-rust">
@@ -248,7 +248,7 @@ fn shortener&lt;'cell, 'a&gt;(cell: &amp;'cell Cell&lt;&amp;'static str&gt;, s: 
     let cell2 = shortener(&amp;cell, &amp;s);
     drop(s);
     println!(&quot;{}&quot;, cell2);
-    
+
 }
 <span class="boring">}
 </span></code></pre></pre>
@@ -263,10 +263,10 @@ fn shortener&lt;'cell, 'a&gt;(cell: &amp;'cell Cell&lt;&amp;'static str&gt;, s: 
 ||   drop(s);
 ||   println!(&quot;{}&quot;, cell2);
 |-
--    
+-
 }
 </code></pre>
-<p>The <code>shortener 'cell</code> holds a reference to <code>cell</code> and a <code>cell2</code> output reference. <code>&amp;cell</code> is a regular input reference without additional bounds, 
+<p>The <code>shortener 'cell</code> holds a reference to <code>cell</code> and a <code>cell2</code> output reference. <code>&amp;cell</code> is a regular input reference without additional bounds,
 so the region for it is one line long, however <code>cell2</code> is used in the print statement, so the region was expanded to be 3 lines long.
 <code>cell region</code> outlives the <code>shortener 'cell</code> region, so we can take a reference and dereference it at any line within the <code>'shortener cell</code>
 region, there are no errors at this point.</p>
@@ -280,7 +280,7 @@ region, there are no errors at this point.</p>
 ||   drop(s);
 -|   println!(&quot;{}&quot;, cell2);
  -
-     
+
 }
 </code></pre>
 <p>The <code>shortener 'a</code> region holds a reference to <code>s</code> and an internal reference inside the <code>cell2</code>(we can think it holds cell2 itself for simplicity). <code>&amp;s</code> is a regular
@@ -304,26 +304,26 @@ in the print statement:</p>
 }
 </code></pre>
 <p>Now, as we don't use <code>cell2</code>, <code>shortener 'cell</code> and <code>shortener 'a</code> regions are both only one line long, and we can safely take references
-to both <code>cell</code> and <code>s</code> at this line. But <code>shortener</code> updates the cell pointing the internal reference to 
+to both <code>cell</code> and <code>s</code> at this line. But <code>shortener</code> updates the cell pointing the internal reference to
 the allocated on the heap string which is being dropped right before we're printing it out on the screen. That's a use after free
 bug and compiler is unable to prevent it because it analyzes functions independetly and can't see that the cell was updated
 inside <code>shortener</code>. That's why we need to disable the ability to shorten lifetimes for the <code>Cell</code> type. However, hardcoding
-types for which shortening rules don't apply is a bad solution. We have the same issue for all types with interior mutability and 
-programmers may define they own interiory mutable types + there may be other kinds of types vulnerable to this same issue. To control
+types for which shortening rules don't apply is a bad solution. We have the same issue for all types with interior mutability and
+programmers may define their own interiory mutable types + there may be other kinds of types vulnerable to this same issue. To control
 whether we allowed to shorten lifetimes or not there is a mechanism called lifetime variance.</p>
 <h2 id="variance-rules"><a class="header" href="#variance-rules">Variance rules</a></h2>
 <p>Variance rules are hardcoded in the compiler for the primitive types and are being inferred for the compound types.</p>
 <p>Threre are 3 of them:</p>
 <ul>
-<li>A type is covariant if <code>'a: 'b</code> implies <code>T&lt;'a&gt;: T&lt;'b&gt;</code>. This is what we've used in the previous chapter to cast <code>Iterator + 'post_urls</code> into <code>Iterator + 'blog_url</code>. 
-Covariance implies that the rules we've learnt before work and lifetime shortenings are allowed.</li>
+<li>A type is covariant if <code>'a: 'b</code> implies <code>T&lt;'a&gt;: T&lt;'b&gt;</code>. This is what we've used in the previous chapter to cast <code>Iterator + 'post_urls</code> into <code>Iterator + 'blog_url</code>.
+Covariance means that the rules we've learnt before work and lifetime shortenings are allowed.</li>
 <li>A type is invariant if <code>'a: 'b</code> implies nothing. That's what we've seen in the example with the <code>Cell</code> type. Basically it's a mechanism to disable lifetime casts.</li>
-<li>A type is contravariant if <code>'a: 'b</code> implies <code>T&lt;'b&gt;: T&lt;'a&gt;</code>. This is a rule that allows to extend lifeime <code>'b</code> to lifetime <code>'a</code>. 
+<li>A type is contravariant if <code>'a: 'b</code> implies <code>T&lt;'b&gt;: T&lt;'a&gt;</code>. This is a rule that allows to extend the lifeime <code>'b</code> to the lifetime <code>'a</code>.
 It works only for the function pointer arguments and it will be your homework to figure it out.</li>
 </ul>
 <p>In practice you'll usually deal with covariance and invariance.</p>
 <p>Here is a table from the Nomicon with the variance settings for different types.
-As a general rule: </p>
+As a general rule:</p>
 <ul>
 <li>All const contexts are covariant</li>
 <li>All mutable/interiory mutable contexts are invariant</li>
@@ -340,7 +340,7 @@ As a general rule: </p>
 <tr><td><code>*const T</code></td><td></td><td>covariant</td><td></td></tr>
 <tr><td><code>*mut T</code></td><td></td><td>invariant</td><td></td></tr>
 </tbody></table>
-<p>It may be a bit confusing to see that variance is applied to a lifetime and some type T. 
+<p>It may be a bit confusing to see that variance is applied to a lifetime and some type T.
 That's because <code>T</code> may be a reference itself(like <code>&amp;'s str</code>). Let's understand how this rules
 work with one more example:</p>
 <pre><pre class="playground"><code class="language-rust">
@@ -350,7 +350,7 @@ work with one more example:</p>
     val: &amp;'a T
 }
 
-fn shortener&lt;'a, 'b, 'c, 'd&gt;(s: S&lt;'a, &amp;'b str&gt;) -&gt; S&lt;'c, &amp;'d str&gt; 
+fn shortener&lt;'a, 'b, 'c, 'd&gt;(s: S&lt;'a, &amp;'b str&gt;) -&gt; S&lt;'c, &amp;'d str&gt;
 where
     'a: 'c,
     'b: 'd,
@@ -359,7 +359,7 @@ where
 }
 <span class="boring">}
 </span></code></pre></pre>
-<p>We have a struct definiton corresponding to that row of the table</p>
+<p>We have a struct definiton corresponding to this row of the table</p>
 <table><thead><tr><th>Type</th><th>'a</th><th>T</th><th>U</th></tr></thead><tbody>
 <tr><td><code>&amp;'a T</code></td><td>covariant</td><td>covariant</td><td></td></tr>
 </tbody></table>
@@ -375,7 +375,7 @@ by shortening <code>&amp;'b str</code> to <code>&amp;'d str</code>.</p>
     val: &amp;'a mut T
 }
 
-fn shortener&lt;'a, 'b, 'c, 'd&gt;(s: S&lt;'a, &amp;'b str&gt;) -&gt; S&lt;'c, &amp;'d str&gt; 
+fn shortener&lt;'a, 'b, 'c, 'd&gt;(s: S&lt;'a, &amp;'b str&gt;) -&gt; S&lt;'c, &amp;'d str&gt;
 where
     'a: 'c,
     'b: 'd,
@@ -397,7 +397,7 @@ covariant over <code>'a</code>, so <code>'a: 'c</code> should work. And indeed, 
     val: &amp;'a mut T
 }
 
-fn shortener&lt;'a, 'b, 'c&gt;(s: S&lt;'a, &amp;'b str&gt;) -&gt; S&lt;'c, &amp;'b str&gt; 
+fn shortener&lt;'a, 'b, 'c&gt;(s: S&lt;'a, &amp;'b str&gt;) -&gt; S&lt;'c, &amp;'b str&gt;
 where
     'a: 'c,
 {
@@ -405,13 +405,13 @@ where
 }
 <span class="boring">}
 </span></code></pre></pre>
-<p>This should be enough material to give you basic undestanding of lifetime variance. In general you want to prefer
-covariant contexts, because they're the most flexible ones. Invariant contexts usually lead to some hard 
-to grasp lifetime errors because references are tightly bounded to their regions and its very hard to move them into another regions.
+<p>This should be enough material to give you a basic undestanding of lifetime variance. In general, you want to prefer
+covariant contexts because they're the most flexible ones. Invariant contexts usually lead to some hard
+to grasp lifetime errors because references are tightly bounded to their regions and it can be tricky to move them into another regions.
 We'll see such errors and learn how to deal with them in another chapters. For now you need to get comfortable with the variance concept.</p>
 <h2 id="chapter-exercises"><a class="header" href="#chapter-exercises">Chapter exercises</a></h2>
 <p>The chapter is called <code>Introduction to variance</code> because it only gives you a reasoning why this mechanism is needed
-and a brief overview of how it works. There is already an awesome <a href="https://lifetime-variance.sunshowers.io">Practical variance tutorial</a> 
+and a brief overview of how it works. There is already an awesome <a href="https://lifetime-variance.sunshowers.io">Practical variance tutorial</a>
 on the Internet. Complete it to master the variance concept.</p>
 
                     </main>
@@ -443,20 +443,6 @@ on the Internet. Complete it to master the variance concept.</p>
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script type="text/javascript">
-            var socket = new WebSocket("ws://localhost:3000/__livereload");
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 

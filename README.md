@@ -1,5 +1,1 @@
-# Usage
-
-- `cargo install mdbook`
-- `mdbook serve -d docs`
-- Open: http://127.0.0.1:3000
+The repo migrated to another user: https://github.com/a1akris/lifetimes-book
